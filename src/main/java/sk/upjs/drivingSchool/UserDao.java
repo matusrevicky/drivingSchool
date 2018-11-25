@@ -1,0 +1,24 @@
+package sk.upjs.drivingSchool;
+
+import java.util.List;
+
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
+
+public interface UserDao {
+	
+	void add(User user);
+
+	List<User> getAll();
+	
+	void save(User user);
+
+	void delete(long id);
+
+	User create(String email, String password) throws DuplicateKeyException;
+
+	User get(String email) throws EmptyResultDataAccessException;
+
+	User get(long id) throws EmptyResultDataAccessException;
+
+}
