@@ -21,4 +21,6 @@ public interface UserDao {
 
 	User get(long id) throws EmptyResultDataAccessException;
 
+	User create(String name, String surname, String username, String email, String password);
+
 }

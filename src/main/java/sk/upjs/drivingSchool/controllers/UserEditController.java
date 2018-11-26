@@ -1,4 +1,4 @@
-package sk.upjs.drivingSchool;
+package sk.upjs.drivingSchool.controllers;
 
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -30,6 +30,7 @@ import sk.upjs.drivingSchool.User;
 import sk.upjs.drivingSchool.UserFxModel;
 import sk.upjs.drivingSchool.UserDao;
 import sk.upjs.drivingSchool.DaoFactory;
+import sk.upjs.drivingSchool.Role;
 
 public class UserEditController {
 

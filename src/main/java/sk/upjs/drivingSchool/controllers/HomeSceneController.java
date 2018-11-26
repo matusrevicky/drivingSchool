@@ -1,5 +1,9 @@
-package sk.upjs.drivingSchool;
+package sk.upjs.drivingSchool.controllers;
 
+import sk.upjs.drivingSchool.App;
+import sk.upjs.drivingSchool.DaoFactory;
+import sk.upjs.drivingSchool.User;
+import sk.upjs.drivingSchool.UserDao;
 import sk.upjs.drivingSchool.login.UserSessionManager;
 import java.net.URL;
 import java.util.ResourceBundle;

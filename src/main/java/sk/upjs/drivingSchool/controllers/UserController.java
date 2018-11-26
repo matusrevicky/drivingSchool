@@ -1,4 +1,4 @@
-package sk.upjs.drivingSchool;
+package sk.upjs.drivingSchool.controllers;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -34,6 +34,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import sk.upjs.drivingSchool.App;
+import sk.upjs.drivingSchool.DaoFactory;
+import sk.upjs.drivingSchool.User;
+import sk.upjs.drivingSchool.UserDao;
 
 public class UserController {
 
@@ -77,7 +81,7 @@ public class UserController {
 			@Override
 			public void handle(ActionEvent event) {
 				UserEditController editController = new UserEditController(selectedUser.get());
-				showModalWindow(editController, "UserEdit.fxml");
+				App.showModalWindow(editController, "UserEdit.fxml");
 				// tento kod sa spusti az po zatvoreni okna
 				UsersModel.setAll(UserDao.getAll());
 			}
@@ -205,20 +209,5 @@ public class UserController {
 		columnsVisibility.put("Posled. prihl.", lastLoginCol.visibleProperty());
 	}
 
-	private void showModalWindow(Object controller, String fxml) {
-		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxml));
-			fxmlLoader.setController(controller);
-			Parent rootPane = fxmlLoader.load();
-			Scene scene = new Scene(rootPane);
-
-			Stage dialog = new Stage();
-			dialog.setScene(scene);
-			dialog.initModality(Modality.APPLICATION_MODAL);
-			dialog.showAndWait();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+	
 }

@@ -7,6 +7,9 @@ import java.util.List;
 
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+
+import sk.upjs.drivingSchool.login.Authenticator;
 
 public class MemoryUserDao implements UserDao {
 
@@ -38,14 +41,20 @@ public class MemoryUserDao implements UserDao {
 		u2.setFname("Mária");
 		u2.setLname("Trošková");
 		u2.setUsername("mariatroskova");
-		u2.setEmail("maria.troskova@upjs.sk");
+		u2.setEmail("i");
+		u2.setPassword(hashPassword("i"));
 		u2.setPhoneNumber("0900 111 111");
 		u2.setDateCreated(LocalDateTime.now());
 		u2.setLastModified(u.getDateCreated());
 		u2.setActive(true);
 		this.add(u2);
 	}
-
+	// TODO pre testovacie ucely - potom zmazat
+	public String hashPassword(String plainText) {
+		String salt = BCrypt.gensalt();
+		return BCrypt.hashpw(plainText, salt);
+	}
+	
 	@Override
 	public void add(User user) {
 		user.setUserId(++lastId);
@@ -89,6 +98,18 @@ public class MemoryUserDao implements UserDao {
 	@Override
 	public User create(String email, String password) throws DuplicateKeyException {
 		User u = new User();
+		u.setPassword(password);
+		u.setEmail(email);
+		this.add(u);
+		return u;
+	}
+	
+	@Override
+	public User create(String name, String surname, String username, String email, String password)  {
+		User u = new User();
+		u.setFname(name);
+		u.setLname(surname);
+		u.setUsername(username);
 		u.setPassword(password);
 		u.setEmail(email);
 		this.add(u);

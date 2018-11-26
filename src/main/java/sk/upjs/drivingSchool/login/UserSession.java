@@ -37,7 +37,7 @@ public class UserSession {
         return userId;
     }
 
-    public void setUserId(final int userId) {
+    public void setUserId(final long userId) {
         this.userId = userId;
     }
 
