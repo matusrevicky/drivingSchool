@@ -1,6 +1,8 @@
 package sk.upjs.drivingSchool.login;
 
 import java.time.LocalDateTime;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -15,40 +17,52 @@ public enum Authenticator {
 
 	private UserDao userDao = DaoFactory.INSTANCE.getUserDao();
 
-	public UserSession logIn(String email, String password) {
-		User user = userDao.get(email);
+	public UserSession logIn(String username, String password) {
+		User user = userDao.get(username);
 
 		if (user == null) {
-			throw new UserAlreadyExistsException();
+			throw new UserDoesNotExistException();
 		}
 
 		if (BCrypt.checkpw(password, user.getPassword()) == false) {
 			throw new BadPasswordException();
 		}
-		
-		user.setLastLogin(LocalDateTime.now());
 
-		UserSession userSession = new UserSession(user, user.getUserId());
+		user.setLastLogin(LocalDateTime.now());
+		UserSession userSession = new UserSession(user, user.getUserId(), user.getRole());
 		UserSessionManager.INSTANCE.setCurrentUserSession(userSession);
 
 		return userSession;
 	}
 
-	public UserSession register(String name, String surname, String username, String email, String password,
-			String passwdAgain) throws UserAlreadyExistsException {
-		if (name.isEmpty() || surname.isEmpty() || username.isEmpty() || email.isEmpty() || password.isEmpty()
-				|| passwdAgain.isEmpty()) {
-			throw new UserAlreadyExistsException();
+	public UserSession register(String name, String surname, String phone, String username, String email,
+			String password, String passwdAgain) throws UserAlreadyExistsException {
+		if (name == null || surname == null  || username == null || email == null || password == null
+				|| passwdAgain == null) {
+			throw new SomethingInUserIsNullExeption();
 		}
 
-		if (userExists(email) || !password.equals(passwdAgain)) {
+		if (name.trim().isEmpty() || surname.trim().isEmpty() || username.trim().isEmpty() || email.trim().isEmpty() || password.trim().isEmpty()
+				|| passwdAgain.trim().isEmpty()) {
+			throw new SomethingInUserIsNullExeption();
+		}
+		
+		if (!validateEmail(email)) {
+			throw new EmailNotValidException();
+		}
+
+		if (userExists(username)) {
 			throw new UserAlreadyExistsException();
+		}
+		
+		if (!password.equals(passwdAgain)) {
+			throw new BadPasswordException();
 		}
 
 		String hashedPassword = hashPassword(password);
 
-		User createdUser = userDao.create(name, surname, username, email, hashedPassword);
-		UserSession userSession = new UserSession(createdUser, createdUser.getUserId());
+		User createdUser = userDao.create(name, surname, phone, username, email, hashedPassword);
+		UserSession userSession = new UserSession(createdUser, createdUser.getUserId(), createdUser.getRole());
 		UserSessionManager.INSTANCE.setCurrentUserSession(userSession);
 
 		return userSession;
@@ -59,15 +73,23 @@ public enum Authenticator {
 		return BCrypt.hashpw(plainText, salt);
 	}
 
-	private boolean userExists(String email) {
+	private boolean userExists(String username) {
 		try {
-			if (userDao.get(email) != null) {
+			if (userDao.get(username) != null) {
 				return true;
 			}
 		} catch (EmptyResultDataAccessException ignored) {
 			return false;
 		}
 		return false;
+	}
+
+	public static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
+			Pattern.CASE_INSENSITIVE);
+
+	public static boolean validateEmail(String email) {
+		Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(email);
+		return matcher.find();
 	}
 
 }

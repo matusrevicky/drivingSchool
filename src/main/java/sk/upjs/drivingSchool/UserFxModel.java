@@ -21,6 +21,7 @@ public class UserFxModel {
 	private StringProperty username = new SimpleStringProperty();
 	private StringProperty email = new SimpleStringProperty();
 	private StringProperty password = new SimpleStringProperty();
+	private StringProperty passwordAgain = new SimpleStringProperty();
 	private StringProperty phoneNumber = new SimpleStringProperty();
 	private ObjectProperty<LocalDateTime> dateCreated = new SimpleObjectProperty<>();
 	private ObjectProperty<LocalDateTime> lastModified = new SimpleObjectProperty<>();
@@ -98,6 +99,26 @@ public class UserFxModel {
 	}
 	public StringProperty emailProperty() {
 		return this.email;
+	}
+	
+	public String getPassword() {
+		return password.get();
+	}
+	public void setPassword(String password) {
+		this.password.set(password);
+	}
+	public StringProperty passwordProperty() {
+		return this.password;
+	}
+	
+	public String getPasswordAgain() {
+		return passwordAgain.get();
+	}
+	public void setPasswordAgain(String passwordAgain) {
+		this.passwordAgain.set(passwordAgain);
+	}
+	public StringProperty passwordAgainProperty() {
+		return this.passwordAgain;
 	}
 	
 	public String getPhoneNumber() {

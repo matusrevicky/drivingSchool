@@ -17,10 +17,10 @@ public interface UserDao {
 
 	User create(String email, String password) throws DuplicateKeyException;
 
-	User get(String email) throws EmptyResultDataAccessException;
+	User get(String username) throws EmptyResultDataAccessException;
 
 	User get(long id) throws EmptyResultDataAccessException;
 
-	User create(String name, String surname, String username, String email, String password);
+	User create(String name, String surname,String phone, String username, String email, String password);
 
 }

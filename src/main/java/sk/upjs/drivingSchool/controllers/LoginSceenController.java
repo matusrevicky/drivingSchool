@@ -13,9 +13,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import sk.upjs.drivingSchool.App;
+import sk.upjs.drivingSchool.User;
+import sk.upjs.drivingSchool.UserFxModel;
 import sk.upjs.drivingSchool.login.Authenticator;
 import sk.upjs.drivingSchool.login.BadPasswordException;
 import sk.upjs.drivingSchool.login.UserAlreadyExistsException;
+import sk.upjs.drivingSchool.login.UserDoesNotExistException;
 import sk.upjs.drivingSchool.login.UserSession;
 
 public class LoginSceenController {
@@ -26,7 +29,7 @@ public class LoginSceenController {
 	private URL location;
 
 	@FXML
-	private TextField emailTextField;
+	private TextField usernameTextField;
 
 	@FXML
 	private PasswordField passwordTextField;
@@ -42,19 +45,20 @@ public class LoginSceenController {
 
 	@FXML
 	private Label emailLabel;
+	
+	private UserFxModel userModel = new UserFxModel(new User());
 
 	@FXML
 	void initialize() {
 
-		registerButton.setOnAction(new EventHandler<ActionEvent>() {
+		usernameTextField.textProperty().bindBidirectional(userModel.usernameProperty());
+		passwordTextField.textProperty().bindBidirectional(userModel.passwordProperty());
+		
+		registerButtonPressed();
+		loginButtonPressed();
+	}
 
-			@Override
-			public void handle(ActionEvent event) {
-
-				App.switchScene(new RegisterSceneController(), "registerScreen.fxml");
-			}
-		});
-
+	private void loginButtonPressed() {
 		loginButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -63,16 +67,26 @@ public class LoginSceenController {
 				try {
 					Authenticator authenticator = Authenticator.INSTANCE;
 
-					UserSession userSession = authenticator.logIn(emailTextField.getText(), passwordTextField.getText());
+					UserSession userSession = authenticator.logIn(userModel.getUsername(), userModel.getPassword());
 
 					App.switchScene(new HomeSceneController(), "HomeScreen.fxml");
-				} catch (UserAlreadyExistsException e) {
+				} catch (UserDoesNotExistException e) {
 					passwdLabel.setText("zly user");
 				} catch (BadPasswordException e) {
 					passwdLabel.setText("zle heslo");
 				} 
 			}
 		});
+	}
 
+	private void registerButtonPressed() {
+		registerButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+
+				App.switchScene(new RegisterSceneController(), "registerScreen.fxml");
+			}
+		});
 	}
 }

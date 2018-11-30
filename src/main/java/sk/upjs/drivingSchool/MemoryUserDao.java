@@ -27,7 +27,8 @@ public class MemoryUserDao implements UserDao {
 		User u = new User();
 		u.setFname("Andrej");
 		u.setLname("Kiska");
-		u.setUsername("andrejkiska");
+		u.setUsername("o");
+		u.setPassword(hashPassword("o"));
 		u.setEmail("prezident@prezident.sk");
 		u.setPhoneNumber("0900 000 000");
 		u.setRole(Role.ADMIN.getName());
@@ -40,7 +41,7 @@ public class MemoryUserDao implements UserDao {
 		User u2 = new User();
 		u2.setFname("Mária");
 		u2.setLname("Trošková");
-		u2.setUsername("mariatroskova");
+		u2.setUsername("i");
 		u2.setEmail("i");
 		u2.setPassword(hashPassword("i"));
 		u2.setPhoneNumber("0900 111 111");
@@ -105,10 +106,11 @@ public class MemoryUserDao implements UserDao {
 	}
 	
 	@Override
-	public User create(String name, String surname, String username, String email, String password)  {
+	public User create(String name, String surname, String phone, String username, String email, String password)  {
 		User u = new User();
 		u.setFname(name);
 		u.setLname(surname);
+		u.setPhoneNumber(phone);
 		u.setUsername(username);
 		u.setPassword(password);
 		u.setEmail(email);
@@ -117,11 +119,11 @@ public class MemoryUserDao implements UserDao {
 	}
 
 	@Override
-	public User get(String email) throws EmptyResultDataAccessException {
+	public User get(String username) throws EmptyResultDataAccessException {
 		Iterator<User> it = users.iterator();
 		while (it.hasNext()) {
 			User p = it.next();
-			if (p.getEmail().equals(email)) {
+			if (p.getUsername().equals(username)) {
 				return p;
 			}
 		}

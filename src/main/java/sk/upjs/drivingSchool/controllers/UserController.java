@@ -23,6 +23,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -38,6 +39,7 @@ import sk.upjs.drivingSchool.App;
 import sk.upjs.drivingSchool.DaoFactory;
 import sk.upjs.drivingSchool.User;
 import sk.upjs.drivingSchool.UserDao;
+import sk.upjs.drivingSchool.login.UserSessionManager;
 
 public class UserController {
 
@@ -63,9 +65,24 @@ public class UserController {
 
 	@FXML
 	private Button BackToRegisterButton;
+	
+	@FXML
+	private Label currentUserName;
 
+	private User loggedInUser;
+	private UserDao userDao = DaoFactory.INSTANCE.getUserDao();
+
+	private void initializeUser() {
+		long userId = UserSessionManager.INSTANCE.getCurrentUserSession().getUserId();
+		loggedInUser = userDao.get(userId);
+	}
+	
 	@FXML
 	void initialize() {
+		initializeUser();
+		currentUserName.setText("Uzivatel: " + loggedInUser.getUsername() + "; rola " + loggedInUser.getRole());
+		
+		
 		UsersModel = FXCollections.observableArrayList(UserDao.getAll());
 
 		BackToRegisterButton.setOnAction(new EventHandler<ActionEvent>() {
