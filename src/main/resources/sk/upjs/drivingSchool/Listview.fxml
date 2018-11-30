@@ -1,28 +1,149 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+
+<AnchorPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TableView fx:id="userTableView" layoutX="43.0" layoutY="148.0" prefHeight="218.0" prefWidth="514.0" AnchorPane.bottomAnchor="34.0" AnchorPane.leftAnchor="43.0" AnchorPane.rightAnchor="43.0" AnchorPane.topAnchor="148.0" />
-      <Label layoutX="209.0" layoutY="37.0" text="Zoznam užívateľov">
-         <font>
-            <Font size="22.0" />
-         </font>
-      </Label>
-      <Button fx:id="editButton" layoutX="426.0" layoutY="110.0" mnemonicParsing="false" text="Uprav" />
-      <Button fx:id="addButton" layoutX="55.0" layoutY="76.0" mnemonicParsing="false" text="Vytvor užívateľa" />
-      <TextField fx:id="surnameTextField" layoutX="252.0" layoutY="110.0" />
-      <Label layoutX="209.0" layoutY="80.0" text="Meno" />
-      <TextField fx:id="nameTextField" layoutX="252.0" layoutY="76.0" />
-      <Label layoutX="187.0" layoutY="114.0" text="Priezvisko" />
-      <Button fx:id="deleteButton" layoutX="56.0" layoutY="110.0" mnemonicParsing="false" text="Vymaž užívateľa" />
-      <Button layoutX="424.0" layoutY="76.0" mnemonicParsing="false" text="Hľadaj" />
-      <Button fx:id="BackToRegisterButton" layoutX="17.0" layoutY="25.0" mnemonicParsing="false" text="BackToRegister" />
+      <AnchorPane prefHeight="44.0" prefWidth="966.0" style="-fx-background-color: #3196DE; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <HBox prefHeight="56.0" prefWidth="966.0">
+               <children>
+                  <Label fx:id="currentUserName" alignment="TOP_LEFT" prefHeight="55.0" prefWidth="1064.0" text="User: Role:" textFill="WHITE">
+                     <font>
+                        <Font size="29.0" />
+                     </font>
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </Label>
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+      <BorderPane layoutY="55.0" prefHeight="601.0" prefWidth="968.0" style="-fx-border-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="55.0">
+         <left>
+            <VBox prefHeight="599.0" prefWidth="206.0" style="-fx-background-color: #ccd4e2; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);">
+               <children>
+                  <Accordion />
+                  <Accordion />
+                  <Button fx:id="editMyProfileButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="207.0" text="Edit my profile">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="changePasswordButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="217.0" text="Change password">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="myAvaibleTimesButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="234.0" text="My avaible times">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="instructorsAvaibleTimesButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="206.0" text="Instructors avaible times">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="upcomingConfirmedRidesButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="232.0" text="Upcoming confirmed rides">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="studentsAvaibleTimesButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="228.0" text="Students avaible times">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="showUsersButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="206.0" text="Users list">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="everyonesAvaibleTimesButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="220.0" text="Everyones avaible times">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="BackToRegisterButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="223.0" text="BackToRegister" />
+               </children>
+            </VBox>
+         </left>
+         <center>
+            <BorderPane BorderPane.alignment="CENTER">
+               <center>
+                  <BorderPane>
+                     <center>
+                        <GridPane>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="637.0" minWidth="10.0" prefWidth="148.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="450.0" minWidth="10.0" prefWidth="86.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="295.0" minWidth="10.0" prefWidth="127.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="400.0" minWidth="10.0" prefWidth="400.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="50.0" minHeight="0.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="477.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <TableView fx:id="userTableView" prefHeight="439.0" prefWidth="754.0" GridPane.columnSpan="4" GridPane.rowIndex="3">
+                                 <GridPane.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" />
+                                 </GridPane.margin>
+                              </TableView>
+                              <Label alignment="CENTER" prefHeight="32.0" prefWidth="222.0" text="Zoznam užívateľov" GridPane.columnSpan="4">
+                                 <font>
+                                    <Font size="22.0" />
+                                 </font>
+                              </Label>
+                              <Button fx:id="editButton" mnemonicParsing="false" text="Uprav" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                                 <GridPane.margin>
+                                    <Insets left="5.0" />
+                                 </GridPane.margin>
+                              </Button>
+                              <Button fx:id="addButton" mnemonicParsing="false" text="Vytvor užívateľa" GridPane.rowIndex="1">
+                                 <GridPane.margin>
+                                    <Insets left="10.0" />
+                                 </GridPane.margin>
+                              </Button>
+                              <TextField fx:id="surnameTextField" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <Label text="Meno" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="nameTextField" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                              <Label text="Priezvisko" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Button fx:id="deleteButton" mnemonicParsing="false" text="Vymaž užívateľa" GridPane.rowIndex="2">
+                                 <GridPane.margin>
+                                    <Insets left="10.0" />
+                                 </GridPane.margin>
+                              </Button>
+                              <Button mnemonicParsing="false" text="Hľadaj" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                                 <GridPane.margin>
+                                    <Insets left="5.0" />
+                                 </GridPane.margin>
+                              </Button>
+                           </children>
+                        </GridPane>
+                     </center>
+                  </BorderPane>
+               </center>
+            </BorderPane>
+         </center>
+      </BorderPane>
    </children>
 </AnchorPane>
