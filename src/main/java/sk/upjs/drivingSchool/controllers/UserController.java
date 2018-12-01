@@ -37,6 +37,7 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import sk.upjs.drivingSchool.App;
 import sk.upjs.drivingSchool.DaoFactory;
+import sk.upjs.drivingSchool.Role;
 import sk.upjs.drivingSchool.User;
 import sk.upjs.drivingSchool.UserDao;
 import sk.upjs.drivingSchool.login.UserSessionManager;
@@ -44,7 +45,7 @@ import sk.upjs.drivingSchool.login.UserSessionManager;
 public class UserController {
 
 	private UserDao UserDao = DaoFactory.INSTANCE.getUserDao();
-	private ObservableList<User> UsersModel;
+	private ObservableList<User> usersModel;
 	private Map<String, BooleanProperty> columnsVisibility = new LinkedHashMap<>();
 	private ObjectProperty<User> selectedUser = new SimpleObjectProperty<>();
 
@@ -55,19 +56,40 @@ public class UserController {
 	private Button editButton;
 
 	@FXML
-	private Button addButton;
-
-	@FXML
 	private TextField surnameTextField;
 
 	@FXML
 	private TextField nameTextField;
 
 	@FXML
-	private Button BackToRegisterButton;
+	private Button homeButton;
+
+	@FXML
+	private Button editMyProfileButton;
+
+	@FXML
+	private Button changePasswordButton;
+
+	@FXML
+	private Button avaibleTimesButton;
+
+	@FXML
+	private Button showUsersButton;
+
+	@FXML
+	private Button signOutButton;
 	
 	@FXML
+    private Button searchButton;
+
+	@FXML
 	private Label currentUserName;
+	
+	@FXML
+    private Button createUserButton;
+	
+	@FXML
+    private Button deleteUserButton;
 
 	private User loggedInUser;
 	private UserDao userDao = DaoFactory.INSTANCE.getUserDao();
@@ -76,23 +98,65 @@ public class UserController {
 		long userId = UserSessionManager.INSTANCE.getCurrentUserSession().getUserId();
 		loggedInUser = userDao.get(userId);
 	}
-	
+
 	@FXML
 	void initialize() {
 		initializeUser();
 		currentUserName.setText("Uzivatel: " + loggedInUser.getUsername() + "; rola " + loggedInUser.getRole());
-		
-		
-		UsersModel = FXCollections.observableArrayList(UserDao.getAll());
 
-		BackToRegisterButton.setOnAction(new EventHandler<ActionEvent>() {
+		usersModel = FXCollections.observableArrayList(UserDao.getAll());
+
+		if (loggedInUser.getRole().equals(Role.STUDENT.getName())) {
+			showUsersButton.setDisable(true);
+			// showUsersButton.setVisible(false);
+		}
+
+		homeButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
-			public void handle(ActionEvent event) {				
-				App.switchScene(new RegisterSceneController(), "registerScreen.fxml");				
+			public void handle(ActionEvent event) {
+				App.switchScene(new HomeSceneController(), "HomeScreen.fxml");
 			}
-		});		
-		
+		});
+		editMyProfileButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				UserEditController editController = new UserEditController(loggedInUser);
+				App.showModalWindow(editController, "UserEdit.fxml");
+				// tento kod sa spusti az po zatvoreni okna
+				usersModel.setAll(UserDao.getAll());
+			}
+		});
+		changePasswordButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				// TODO
+			}
+		});
+		avaibleTimesButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				App.switchScene(new AvailableTimesController(loggedInUser), "AvailableTimes.fxml");
+			}
+		});
+		showUsersButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				App.switchScene(new UserController(), "Listview.fxml");
+			}
+		});
+		signOutButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				App.switchScene(new RegisterSceneController(), "RegisterScreen.fxml");
+			}
+		});
+
 		editButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -100,7 +164,34 @@ public class UserController {
 				UserEditController editController = new UserEditController(selectedUser.get());
 				App.showModalWindow(editController, "UserEdit.fxml");
 				// tento kod sa spusti az po zatvoreni okna
-				UsersModel.setAll(UserDao.getAll());
+				usersModel.setAll(UserDao.getAll());
+			}
+		});
+		
+		searchButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		createUserButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		deleteUserButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 
@@ -119,7 +210,7 @@ public class UserController {
 		makeLastModifiedColumn();
 		makeLastLoginColumn();
 
-		userTableView.setItems(UsersModel);
+		userTableView.setItems(usersModel);
 		userTableView.setEditable(true);
 
 		ContextMenu contextMenu = new ContextMenu();
@@ -226,5 +317,4 @@ public class UserController {
 		columnsVisibility.put("Posled. prihl.", lastLoginCol.visibleProperty());
 	}
 
-	
 }

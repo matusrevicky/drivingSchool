@@ -2,6 +2,8 @@ package sk.upjs.drivingSchool;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -29,6 +31,7 @@ public class UserFxModel {
 	private BooleanProperty active = new SimpleBooleanProperty();
 	private IntegerProperty ridesDone = new SimpleIntegerProperty();
 	private StringProperty role = new SimpleStringProperty();
+	private HashSet<AvailableTime> availableTimes = new HashSet<AvailableTime>();
 
 	public UserFxModel(User user) {
 		this.user = user;
@@ -43,6 +46,7 @@ public class UserFxModel {
 		setRole(user.getRole());
 		setRidesDone(user.getRidesDone());
 		setActive(user.isActive());
+		setAvailableTimes(user.getAvailableTimes());
 	}
 	public User getUser() {
 		user.setFname(getFname());
@@ -56,6 +60,7 @@ public class UserFxModel {
 		user.setActive(getActive());
 		user.setRole(getRole());
 		user.setRidesDone(getRidesDone());
+		user.setAvailableTimes(getAvailableTimes());
 		return user;
 	}	
 	
@@ -189,5 +194,12 @@ public class UserFxModel {
 	}
 	public ObjectProperty<LocalDateTime> lastLoginProperty() {
 		return lastLogin;
+	}
+	
+	public HashSet<AvailableTime> getAvailableTimes() {
+		return availableTimes;
+	}
+	public void setAvailableTimes(HashSet availableTimes) {
+		this.availableTimes = availableTimes;
 	}
 }

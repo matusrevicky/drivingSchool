@@ -6,6 +6,7 @@ import sk.upjs.drivingSchool.Role;
 import sk.upjs.drivingSchool.User;
 import sk.upjs.drivingSchool.UserDao;
 import sk.upjs.drivingSchool.login.UserSessionManager;
+import jfxtras.scene.control.agenda.Agenda;
 
 
 import javafx.event.ActionEvent;
@@ -24,22 +25,16 @@ public class HomeSceneController {
 	private Button changePasswordButton;
 
 	@FXML
-	private Button myAvaibleTimesButton;
+	private Button avaibleTimesButton;
 
 	@FXML
-	private Button instructorsAvaibleTimesButton;
-
-	@FXML
-	private Button upcomingConfirmedRidesButton;
-
-	@FXML
-	private Button studentsAvaibleTimesButton;
+	private Button homeButton;
 
 	@FXML
 	private Button showUsersButton;
-
+	
 	@FXML
-	private Button everyonesAvaibleTimesButton;
+	private Button signOutButton;
 	
 	@FXML
 	private TextField emailTextField;
@@ -77,6 +72,36 @@ public class HomeSceneController {
 			// showUsersButton.setVisible(false);
 		}
 
+		homeButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				App.switchScene(new HomeSceneController(), "HomeScreen.fxml");
+			}
+		});
+		editMyProfileButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				UserEditController editController = new UserEditController(loggedInUser);
+				App.showModalWindow(editController, "UserEdit.fxml");
+				// tento kod sa spusti az po zatvoreni okna
+			}
+		});
+		changePasswordButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				//TODO
+			}
+		});
+		avaibleTimesButton.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				App.switchScene(new AvailableTimesController(loggedInUser), "AvailableTimes.fxml");
+			}
+		});
 		showUsersButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -84,5 +109,13 @@ public class HomeSceneController {
 				App.switchScene(new UserController(), "Listview.fxml");
 			}
 		});
+		signOutButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				App.switchScene(new RegisterSceneController(), "RegisterScreen.fxml");
+			}
+		});		
+		
 	}
 }

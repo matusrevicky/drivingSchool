@@ -118,7 +118,7 @@ public class UserEditController {
 	@FXML
 	private ComboBox<String> roleComboBox;
 	
-	//if premature garbage collectionproblem, use this
+	//if premature garbage collectionproblem, use this:
 	//private ObjectProperty<Integer> spinnerValue = userModel.ridesDoneProperty().asObject();
 	@FXML
 	private Spinner<Integer> ridesDoneSpinner;

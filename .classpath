@@ -24,5 +24,10 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/T440p/Downloads/jar_subory/jfxtras-agenda-8.0-r6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/T440p/Downloads/jar_subory/jfxtras-common-8.0-r6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/T440p/Downloads/jar_subory/jfxtras-controls-8.0-r6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/T440p/Downloads/jar_subory/jfxtras-fxml-8.0-r6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/T440p/Downloads/jar_subory/jfxtras-labs-samples-8.0-r6-SNAPSHOT-all.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

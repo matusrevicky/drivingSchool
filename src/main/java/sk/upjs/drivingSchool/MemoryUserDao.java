@@ -2,6 +2,7 @@ package sk.upjs.drivingSchool;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,6 +37,14 @@ public class MemoryUserDao implements UserDao {
 		u.setDateCreated(LocalDateTime.now());
 		u.setLastModified(u.getDateCreated());
 		u.setActive(true);
+		
+		AvailableTime time = new AvailableTime();
+		time.setStartTime(LocalDateTime.now().withHour(3));
+		time.setEndTime(LocalDateTime.now().withHour(12));
+		HashSet<AvailableTime> times = new HashSet<>();
+		times.add(time);
+		u.setAvailableTimes(times);
+		
 		this.add(u);
 
 		User u2 = new User();
@@ -48,7 +57,32 @@ public class MemoryUserDao implements UserDao {
 		u2.setDateCreated(LocalDateTime.now());
 		u2.setLastModified(u.getDateCreated());
 		u2.setActive(true);
+		
+		time = new AvailableTime();
+		times = new HashSet<>();
+		time.setStartTime(LocalDateTime.now().withHour(6));
+		time.setEndTime(LocalDateTime.now().withHour(11));
+		times.add(time);
+		time = new AvailableTime();
+		time.setStartTime(LocalDateTime.now().withHour(12));
+		time.setEndTime(LocalDateTime.now().withHour(15));
+		times.add(time);
+		u2.setAvailableTimes(times);
+		
 		this.add(u2);
+		
+		User u3 = new User();
+		u3.setFname("Neaktivny");
+		u3.setLname("Student");
+		u3.setUsername("i");
+		u3.setEmail("i");
+		u3.setPassword(hashPassword("i"));
+		u3.setDateCreated(LocalDateTime.now());
+		u3.setLastModified(u.getDateCreated());
+		u3.setRole(Role.STUDENT.getName());
+		u3.setActive(false);
+		
+		this.add(u3);
 	}
 	// TODO pre testovacie ucely - potom zmazat
 	public String hashPassword(String plainText) {

@@ -15,7 +15,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <AnchorPane prefHeight="44.0" prefWidth="966.0" style="-fx-background-color: #3196DE; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
@@ -40,6 +39,11 @@
                <children>
                   <Accordion />
                   <Accordion />
+                  <Button fx:id="homeButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="206.0" text="Home">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Button>
                   <Button fx:id="editMyProfileButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="207.0" text="Edit my profile">
                      <font>
                         <Font size="13.0" />
@@ -50,37 +54,20 @@
                         <Font size="13.0" />
                      </font>
                   </Button>
-                  <Button fx:id="myAvaibleTimesButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="234.0" text="My avaible times">
+                  <Button fx:id="avaibleTimesButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="234.0" text="Avaible times">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Button>
-                  <Button fx:id="instructorsAvaibleTimesButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="206.0" text="Instructors avaible times">
+                  <Button fx:id="showUsersButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="206.0" text="Show all users">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Button>
-                  <Button fx:id="upcomingConfirmedRidesButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="232.0" text="Upcoming confirmed rides">
+                  <Button fx:id="signOutButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="223.0" text="Sign out">
                      <font>
                         <Font size="13.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="studentsAvaibleTimesButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="228.0" text="Students avaible times">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="showUsersButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="206.0" text="Users list">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="everyonesAvaibleTimesButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="220.0" text="Everyones avaible times">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="BackToRegisterButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="223.0" text="BackToRegister" />
+                     </font></Button>
                </children>
             </VBox>
          </left>
@@ -91,8 +78,8 @@
                      <center>
                         <GridPane>
                            <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="637.0" minWidth="10.0" prefWidth="148.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="450.0" minWidth="10.0" prefWidth="86.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="637.0" minWidth="10.0" prefWidth="165.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="450.0" minWidth="10.0" prefWidth="68.0" />
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="295.0" minWidth="10.0" prefWidth="127.0" />
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="400.0" minWidth="10.0" prefWidth="400.0" />
                            </columnConstraints>
@@ -108,17 +95,17 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" />
                                  </GridPane.margin>
                               </TableView>
-                              <Label alignment="CENTER" prefHeight="32.0" prefWidth="222.0" text="Zoznam užívateľov" GridPane.columnSpan="4">
+                              <Label alignment="CENTER" prefHeight="32.0" prefWidth="163.0" text="List of all users" GridPane.columnSpan="4">
                                  <font>
                                     <Font size="22.0" />
                                  </font>
                               </Label>
-                              <Button fx:id="editButton" mnemonicParsing="false" text="Uprav" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                              <Button fx:id="editButton" mnemonicParsing="false" text="Edit user" GridPane.columnIndex="3" GridPane.rowIndex="2">
                                  <GridPane.margin>
                                     <Insets left="5.0" />
                                  </GridPane.margin>
                               </Button>
-                              <Button fx:id="addButton" mnemonicParsing="false" text="Vytvor užívateľa" GridPane.rowIndex="1">
+                              <Button fx:id="createUserButton" mnemonicParsing="false" text="Create user TODO?" GridPane.rowIndex="1">
                                  <GridPane.margin>
                                     <Insets left="10.0" />
                                  </GridPane.margin>
@@ -127,12 +114,12 @@
                               <Label text="Meno" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <TextField fx:id="nameTextField" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                               <Label text="Priezvisko" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <Button fx:id="deleteButton" mnemonicParsing="false" text="Vymaž užívateľa" GridPane.rowIndex="2">
+                              <Button fx:id="deleteUserButton" mnemonicParsing="false" text="Delete user TODO" GridPane.rowIndex="2">
                                  <GridPane.margin>
                                     <Insets left="10.0" />
                                  </GridPane.margin>
                               </Button>
-                              <Button mnemonicParsing="false" text="Hľadaj" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                              <Button fx:id="searchButton" mnemonicParsing="false" text="Search TODO" GridPane.columnIndex="3" GridPane.rowIndex="1">
                                  <GridPane.margin>
                                     <Insets left="5.0" />
                                  </GridPane.margin>

@@ -13,7 +13,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <AnchorPane prefHeight="44.0" prefWidth="966.0" style="-fx-background-color: #3196DE; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
@@ -40,38 +39,31 @@
                      <children>
                         <Accordion />
                         <Accordion />
-                        <Button fx:id="upcomingConfirmedRidesButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="232.0" text="Upcoming confirmed rides/home" />
+                        <Button fx:id="homeButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="232.0" text="Home TODO">
+                           <font>
+                              <Font size="13.0" />
+                           </font></Button>
                         <Button fx:id="editMyProfileButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="207.0" text="Edit my profile">
                            <font>
                               <Font size="13.0" />
                            </font>
                         </Button>
-                        <Button fx:id="changePasswordButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="217.0" text="Change password">
+                        <Button fx:id="changePasswordButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="217.0" text="Change password TODO">
                            <font>
                               <Font size="13.0" />
                            </font>
                         </Button>
-                        <Button fx:id="myAvaibleTimesButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="234.0" text="My avaible times">
+                        <Button fx:id="avaibleTimesButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="234.0" text="Avaible times">
                            <font>
                               <Font size="13.0" />
                            </font>
                         </Button>
-                        <Button fx:id="instructorsAvaibleTimesButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="206.0" text="Instructors avaible times">
+                        <Button fx:id="showUsersButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="206.0" text="Show all users">
                            <font>
                               <Font size="13.0" />
                            </font>
                         </Button>
-                        <Button fx:id="studentsAvaibleTimesButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="228.0" text="Students avaible times">
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                        </Button>
-                        <Button fx:id="showUsersButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="206.0" text="Users list">
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                        </Button>
-                        <Button fx:id="everyonesAvaibleTimesButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="220.0" text="Everyones avaible times">
+                        <Button fx:id="signOutButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="206.0" text="Sign out">
                            <font>
                               <Font size="13.0" />
                            </font>
