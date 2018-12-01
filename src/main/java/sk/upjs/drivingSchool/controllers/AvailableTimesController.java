@@ -103,8 +103,8 @@ public class AvailableTimesController {
 	@FXML
 	void initialize() {
 
-		initializeCalendar();
 		initializeComboBoxesAndCheckBox();
+		initializeCalendar();
 
 		if (userModel.getUser().getRole().equals(Role.STUDENT.getName())) {
 			showUsersButton.setDisable(true);
@@ -188,21 +188,16 @@ public class AvailableTimesController {
 		List<String> roles = Role.STUDENT.getAllNames();
 		ObservableList<String> f = FXCollections.observableList(roles);
 		roleComboBox.setItems(f);
-
 		roleComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				selectedRole = newValue;
-
 				refreshNameComboBox();
 			}
 		});
-
 		roleComboBox.getSelectionModel().select(userModel.getRole());
-
-		refreshNameComboBox();
-
+		
 		activeCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
 
 			@Override
@@ -211,9 +206,7 @@ public class AvailableTimesController {
 				refreshNameComboBox();
 			}
 		});
-	}
-
-	private void refreshNameComboBox() {
+		activeCheckBox.selectedProperty().setValue(userModel.getActive());
 		
 		List<User> users = getAll(selectedRole, selectedActive);
 		nameComboBox.setItems(FXCollections.observableList(users));
@@ -227,11 +220,23 @@ public class AvailableTimesController {
 					userModel = new UserFxModel(newValue);				
 				}
 				initializeCalendar();
+				checkSaveButtonVisibility();
 			}
 		});
+		
+		nameComboBox.getSelectionModel().select(userModel.getUser());
+	}
+
+	private void refreshNameComboBox() {
+		
+		List<User> users = getAll(selectedRole, selectedActive);
+		nameComboBox.setItems(FXCollections.observableList(users));
 		if (!users.isEmpty()) {
 			nameComboBox.getSelectionModel().select(users.get(0));
 		}
+	}
+	
+	private void checkSaveButtonVisibility() {
 		
 		if(userModel!=null && loggedInUser == userModel.getUser()) {
 			//saveButton.setDisable(false);
