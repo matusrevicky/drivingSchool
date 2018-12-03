@@ -9,12 +9,18 @@ public enum DaoFactory {
 	
 	private JdbcTemplate jdbcTemplate;
 	private UserDao userDao;
+	private AvailableTimeDao availableTimeDao;
 	
 	
 	public UserDao getUserDao() {
 		if (userDao == null)
 			userDao = new MemoryUserDao();
 		return userDao;
+	}
+	public AvailableTimeDao getAvailableTimeDao() {
+		if (availableTimeDao == null)
+			availableTimeDao = new MemoryAvailableTimeDao();
+		return availableTimeDao;
 	}
 	
 //	public WorkshopDao getWorkshopDao() {

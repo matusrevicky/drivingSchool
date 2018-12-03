@@ -29,6 +29,7 @@ import jfxtras.labs.icalendarfx.components.VEvent;
 import jfxtras.scene.control.agenda.Agenda;
 import sk.upjs.drivingSchool.App;
 import sk.upjs.drivingSchool.AvailableTime;
+import sk.upjs.drivingSchool.AvailableTimeDao;
 import sk.upjs.drivingSchool.DaoFactory;
 import sk.upjs.drivingSchool.Role;
 import sk.upjs.drivingSchool.User;
@@ -88,6 +89,7 @@ public class AvailableTimesController {
 	@FXML
 	private ComboBox<User> nameComboBox;
 
+	private AvailableTimeDao availableTimeDao = DaoFactory.INSTANCE.getAvailableTimeDao();
 	private UserDao userDao = DaoFactory.INSTANCE.getUserDao();
 	private UserFxModel userModel;
 	private String selectedRole;
@@ -169,9 +171,8 @@ public class AvailableTimesController {
 			@Override
 			public void handle(ActionEvent event) {
 				saveAvailableTimes();
-				userModel.setLastModified(LocalDateTime.now());
-				userDao.save(userModel.getUser());
-				// saveButton.getScene().getWindow().hide();
+				userDao.get(loggedInUser.getUserId()).setLastModified(LocalDateTime.now());
+
 			}
 		});
 
@@ -216,7 +217,7 @@ public class AvailableTimesController {
 		});
 		activeCheckBox.selectedProperty().setValue(userModel.getActive());
 
-		List<User> users = getAll(selectedRole, selectedActive);
+		List<User> users = userDao.getAll(userModel.getRole(), userModel.getActive());
 		nameComboBox.setItems(FXCollections.observableList(users));
 		nameComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<User>() {
 
@@ -237,7 +238,7 @@ public class AvailableTimesController {
 
 	private void refreshNameComboBox() {
 
-		List<User> users = getAll(selectedRole, selectedActive);
+		List<User> users = userDao.getAll(selectedRole, selectedActive);
 		nameComboBox.setItems(FXCollections.observableList(users));
 		if (!users.isEmpty()) {
 			nameComboBox.getSelectionModel().select(users.get(0));
@@ -308,7 +309,7 @@ public class AvailableTimesController {
 
 		for (VEvent event : myCalendar.getVEvents()) {
 			AvailableTime newAvailableTime = new AvailableTime();
-			newAvailableTime.setUserId(userModel.getUser().getUserId());// TODO generovanie id, treba vobec?
+			newAvailableTime.setUserId(loggedInUser.getUserId());// TODO generovanie id, treba vobec?
 
 			String str = event.getDateTimeStart().getValue().toString();
 			LocalDateTime l = LocalDateTime.parse(str.substring(0, str.indexOf('+')));// alebo subSequence(0,19)?
@@ -321,16 +322,7 @@ public class AvailableTimesController {
 			hashSetOfAvailableTimes.add(newAvailableTime);
 		}
 
-		userModel.setAvailableTimes(hashSetOfAvailableTimes);
+		userDao.get(loggedInUser.getUserId()).setAvailableTimes(hashSetOfAvailableTimes);
 	}
 
-	private List<User> getAll(String role, boolean active) {
-		List<User> list = new ArrayList<User>();
-		for (User u : userDao.getAll()) {
-			if (u.getRole() == role && u.isActive() == active) {
-				list.add(u);
-			}
-		}
-		return list;
-	}
 }

@@ -11,6 +11,8 @@ public interface UserDao {
 
 	List<User> getAll();
 	
+	List<User> getAll(String role, boolean active);
+	
 	void save(User user);
 
 	void delete(long id);
