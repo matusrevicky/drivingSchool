@@ -19,6 +19,7 @@ import sk.upjs.drivingSchool.login.Authenticator;
 import sk.upjs.drivingSchool.login.BadPasswordException;
 import sk.upjs.drivingSchool.login.UserAlreadyExistsException;
 import sk.upjs.drivingSchool.login.UserDoesNotExistException;
+import sk.upjs.drivingSchool.login.UserNotActiveException;
 import sk.upjs.drivingSchool.login.UserSession;
 
 public class LoginSceenController {
@@ -48,6 +49,11 @@ public class LoginSceenController {
 	
 	private UserFxModel userModel = new UserFxModel(new User());
 
+	public static final String BAD_PASSWORD = "Bad password";
+	public static final String BAD_USER = "Bad user";
+	public static final String NOT_ACTIVE = "You are no longer a member";
+	
+	
 	@FXML
 	void initialize() {
 
@@ -71,9 +77,11 @@ public class LoginSceenController {
 
 					App.switchScene(new HomeSceneController(), "HomeScreen.fxml");
 				} catch (UserDoesNotExistException e) {
-					passwdLabel.setText("zly user");
+					passwdLabel.setText(BAD_USER);
 				} catch (BadPasswordException e) {
-					passwdLabel.setText("zle heslo");
+					passwdLabel.setText(BAD_PASSWORD);
+				}  catch (UserNotActiveException e) {
+					passwdLabel.setText(NOT_ACTIVE);
 				} 
 			}
 		});

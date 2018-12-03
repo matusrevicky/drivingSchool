@@ -82,12 +82,12 @@ public class RegisterSceneController {
 
 	private UserFxModel userModel = new UserFxModel(new User());
 
-	public static final String EMPTY = "Povinný údaj";
+	public static final String EMPTY = "Required";
 	public static final String NOTHING_TO_REMIND = "";
-	public static final String EVERYTHING_OK = "ok";
-	public static final String BAD_EMAIL_FORMAT = "zly format";
-	public static final String PASSWORDS_DO_NOT_MATCH = "nerovnaju sa";
-	public static final String USER_EXISTS = "uz existuje";
+	public static final String EVERYTHING_OK = "Ok";
+	public static final String BAD_EMAIL_FORMAT = "Bad email";
+	public static final String PASSWORDS_DO_NOT_MATCH = "Not equal";
+	public static final String USER_EXISTS = "Exists already";
 
 	@FXML
 	public void initialize() {
@@ -139,6 +139,7 @@ public class RegisterSceneController {
 							userModel.getPassword(), userModel.getPasswordAgain());
 					App.switchScene(new HomeSceneController(), "HomeScreen.fxml");
 				} catch (UserAlreadyExistsException e) {
+					changeColorRed(usernameTextField);
 					usernameLabel.setText(USER_EXISTS);
 				} catch (SomethingInUserIsNullExeption e) {
 					checkIfEmptyWarning(userModel.getFname(), nameLabel, fnameTextField);
@@ -148,6 +149,7 @@ public class RegisterSceneController {
 					checkIfEmptyWarning(userModel.getPassword(), passwdLabel, passwordTextField);
 					checkIfEmptyWarning(userModel.getPasswordAgain(), passwdAgainLabel, passwdAgainTextField);
 				} catch (EmailNotValidException e) {
+					changeColorRed(emailTextField);
 					emailLabel.setText(BAD_EMAIL_FORMAT);
 				} catch (BadPasswordException e) {
 
@@ -160,12 +162,12 @@ public class RegisterSceneController {
 		String cssLayout = "-fx-border-color: red;\n" + "-fx-border-radius: 4;\n" + "-fx-border-width: 2;\n";
 		textField.setStyle(cssLayout);
 	}
-	
+
 	public void changeColorGreen(TextField textField) {
 		String cssLayout = "-fx-border-color: green;\n" + "-fx-border-radius: 4;\n" + "-fx-border-width: 2;\n";
 		textField.setStyle(cssLayout);
 	}
-	
+
 	public void changeColorNoColor(TextField textField) {
 		String cssLayout = "-fx-border-width: 0;\n";
 		textField.setStyle(cssLayout);
@@ -285,7 +287,8 @@ public class RegisterSceneController {
 					return;
 				}
 
-				if (userModel.getPassword().equals(userModel.getPasswordAgain())) {
+				if (userModel.getPassword() != null
+						&& userModel.getPassword().equals(userModel.getPasswordAgain())) {
 					changeColorGreen(passwdAgainTextField);
 					passwdAgainLabel.setText(EVERYTHING_OK);
 				} else {

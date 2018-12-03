@@ -34,6 +34,7 @@ import sk.upjs.drivingSchool.Role;
 import sk.upjs.drivingSchool.User;
 import sk.upjs.drivingSchool.UserDao;
 import sk.upjs.drivingSchool.UserFxModel;
+import sk.upjs.drivingSchool.login.UserSessionManager;
 
 public class AvailableTimesController {
 
@@ -93,6 +94,11 @@ public class AvailableTimesController {
 	private boolean selectedActive;
 	private User loggedInUser;
 
+	private void initializeUser() {
+		long userId = UserSessionManager.INSTANCE.getCurrentUserSession().getUserId();
+		loggedInUser = userDao.get(userId);
+	}
+
 	public AvailableTimesController(User user) {
 		loggedInUser = user;
 		this.userModel = new UserFxModel(user);
@@ -103,6 +109,8 @@ public class AvailableTimesController {
 	@FXML
 	void initialize() {
 
+		initializeUser();
+		currentUserName.setText("Uzivatel: " + loggedInUser.getUsername() + "; rola " + loggedInUser.getRole());
 		initializeComboBoxesAndCheckBox();
 		initializeCalendar();
 
@@ -197,7 +205,7 @@ public class AvailableTimesController {
 			}
 		});
 		roleComboBox.getSelectionModel().select(userModel.getRole());
-		
+
 		activeCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
 
 			@Override
@@ -207,7 +215,7 @@ public class AvailableTimesController {
 			}
 		});
 		activeCheckBox.selectedProperty().setValue(userModel.getActive());
-		
+
 		List<User> users = getAll(selectedRole, selectedActive);
 		nameComboBox.setItems(FXCollections.observableList(users));
 		nameComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<User>() {
@@ -216,33 +224,33 @@ public class AvailableTimesController {
 			public void changed(ObservableValue<? extends User> observable, User oldValue, User newValue) {
 				if (newValue == null) {
 					userModel = null;
-				}else {
-					userModel = new UserFxModel(newValue);				
+				} else {
+					userModel = new UserFxModel(newValue);
 				}
 				initializeCalendar();
 				checkSaveButtonVisibility();
 			}
 		});
-		
+
 		nameComboBox.getSelectionModel().select(userModel.getUser());
 	}
 
 	private void refreshNameComboBox() {
-		
+
 		List<User> users = getAll(selectedRole, selectedActive);
 		nameComboBox.setItems(FXCollections.observableList(users));
 		if (!users.isEmpty()) {
 			nameComboBox.getSelectionModel().select(users.get(0));
 		}
 	}
-	
+
 	private void checkSaveButtonVisibility() {
-		
-		if(userModel!=null && loggedInUser == userModel.getUser()) {
-			//saveButton.setDisable(false);
+
+		if (userModel != null && loggedInUser == userModel.getUser()) {
+			// saveButton.setDisable(false);
 			saveButton.setVisible(true);
-		}else {
-			//saveButton.setDisable(true);
+		} else {
+			// saveButton.setDisable(true);
 			saveButton.setVisible(false);
 		}
 	}

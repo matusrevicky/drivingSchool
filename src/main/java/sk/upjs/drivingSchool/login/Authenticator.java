@@ -28,6 +28,9 @@ public enum Authenticator {
 			throw new BadPasswordException();
 		}
 
+		if (!user.isActive()) {
+			throw new UserNotActiveException();
+		}
 		user.setLastLogin(LocalDateTime.now());
 		UserSession userSession = new UserSession(user, user.getUserId(), user.getRole());
 		UserSessionManager.INSTANCE.setCurrentUserSession(userSession);
