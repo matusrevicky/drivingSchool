@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="target/classes" path="src/main/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="test" value="true"/>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/Samo/UPJS/paz1c/jfxtras-agenda-8.0-r6.jar"/>
+	<classpathentry kind="lib" path="D:/Samo/UPJS/paz1c/jfxtras-common-8.0-r6.jar"/>
+	<classpathentry kind="lib" path="D:/Samo/UPJS/paz1c/jfxtras-controls-8.0-r6.jar"/>
+	<classpathentry kind="lib" path="D:/Samo/UPJS/paz1c/jfxtras-fxml-8.0-r6.jar"/>
+	<classpathentry kind="lib" path="D:/Samo/UPJS/paz1c/jfxtras-labs-samples-8.0-r6-SNAPSHOT-all.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

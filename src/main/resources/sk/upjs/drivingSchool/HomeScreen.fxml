@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane prefHeight="44.0" prefWidth="966.0" style="-fx-background-color: #3196DE; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <HBox prefHeight="56.0" prefWidth="966.0">
+               <children>
+                  <Label fx:id="currentUserName" alignment="TOP_LEFT" prefHeight="55.0" prefWidth="1064.0" text="User: Role:" textFill="WHITE">
+                     <font>
+                        <Font size="29.0" />
+                     </font>
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </Label>
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+      <BorderPane layoutY="55.0" prefHeight="601.0" prefWidth="968.0" style="-fx-border-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="55.0">
+         <left>
+            <BorderPane>
+               <center>
+                  <VBox prefHeight="599.0" prefWidth="206.0" style="-fx-background-color: #ccd4e2; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);">
+                     <children>
+                        <Accordion />
+                        <Accordion />
+                        <Button fx:id="homeButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="232.0" text="Home TODO">
+                           <font>
+                              <Font size="13.0" />
+                           </font></Button>
+                        <Button fx:id="editMyProfileButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="207.0" text="Edit my profile">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="changePasswordButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="217.0" text="Change password TODO">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="avaibleTimesButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="234.0" text="Avaible times">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="showUsersButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="206.0" text="Show all users">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="signOutButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="206.0" text="Sign out">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+               </center>
+            </BorderPane>
+         </left>
+         <center>
+            <BorderPane BorderPane.alignment="CENTER">
+               <center>
+                  <GridPane maxHeight="403.0" maxWidth="595.0" prefHeight="403.0" prefWidth="595.0" BorderPane.alignment="CENTER">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="80.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="51.0" minHeight="10.0" prefHeight="51.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="49.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label alignment="CENTER" prefHeight="65.0" prefWidth="615.0" text="Homescreen/ confirmed rides" GridPane.columnSpan="2">
+                           <font>
+                              <Font size="44.0" />
+                           </font>
+                        </Label>
+                        <Label text="Tu by som mal byt schopny vidiet moje potvrdene casy" GridPane.rowIndex="1" />
+                     </children>
+                  </GridPane>
+               </center>
+            </BorderPane>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>
