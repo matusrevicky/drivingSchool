@@ -9,26 +9,23 @@ public enum DaoFactory {
 	
 	private JdbcTemplate jdbcTemplate;
 	private UserDao userDao;
-	private AvailableTimesDao availableTimeDao;
+	private AvailableTimesDao availableTimesDao;
 	
 	
 	public UserDao getUserDao() {
-		if (userDao == null)
+		if (userDao == null) {
 			userDao = new MemoryUserDao();
+			//userDao = new MysqlUserDao(getJdbcTemplate());
+		}
 		return userDao;
 	}
 	public AvailableTimesDao getAvailableTimesDao() {
-		if (availableTimeDao == null)
-			availableTimeDao = new MemoryAvailableTimesDao();
-		return availableTimeDao;
+		if (availableTimesDao == null) {
+			availableTimesDao = new MemoryAvailableTimesDao();
+			//availableTimesDao = new MysqlAvailableTimesDao(getJdbcTemplate());
+		}
+		return availableTimesDao;
 	}
-	
-//	public WorkshopDao getWorkshopDao() {
-//		if (workshopDao == null) {
-//			workshopDao = new MysqlWorkshopDao(getJdbcTemplate());
-//		}
-//		return workshopDao;
-//	}
 	
 	private JdbcTemplate getJdbcTemplate() {
 		if (jdbcTemplate == null) {

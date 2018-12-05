@@ -17,7 +17,7 @@ public interface UserDao {
 
 	void delete(long id);
 
-	User create(String email, String password) throws DuplicateKeyException;
+	//User create(String email, String password) throws DuplicateKeyException;
 
 	User get(String username) throws EmptyResultDataAccessException;
 

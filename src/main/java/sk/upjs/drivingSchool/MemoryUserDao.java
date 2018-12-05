@@ -132,14 +132,14 @@ public class MemoryUserDao implements UserDao {
 		}
 	}
 
-	@Override
+	/*@Override
 	public User create(String email, String password) throws DuplicateKeyException {
 		User u = new User();
 		u.setPassword(password);
 		u.setEmail(email);
 		this.add(u);
 		return u;
-	}
+	}*/
 	
 	@Override
 	public User create(String name, String surname, String phone, String username, String email, String password)  {
