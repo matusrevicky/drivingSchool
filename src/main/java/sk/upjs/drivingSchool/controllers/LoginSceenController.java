@@ -74,7 +74,8 @@ public class LoginSceenController {
 					Authenticator authenticator = Authenticator.INSTANCE;
 
 					UserSession userSession = authenticator.logIn(userModel.getUsername(), userModel.getPassword());
-
+					
+					
 					App.switchScene(new HomeSceneController(), "HomeScreen.fxml");
 				} catch (UserDoesNotExistException e) {
 					passwdLabel.setText(BAD_USER);

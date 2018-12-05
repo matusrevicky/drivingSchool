@@ -14,15 +14,15 @@ public enum DaoFactory {
 	
 	public UserDao getUserDao() {
 		if (userDao == null) {
-			userDao = new MemoryUserDao();
-			//userDao = new MysqlUserDao(getJdbcTemplate());
+			//userDao = new MemoryUserDao();
+			userDao = new MysqlUserDao(getJdbcTemplate());
 		}
 		return userDao;
 	}
 	public AvailableTimesDao getAvailableTimesDao() {
 		if (availableTimesDao == null) {
-			availableTimesDao = new MemoryAvailableTimesDao();
-			//availableTimesDao = new MysqlAvailableTimesDao(getJdbcTemplate());
+			//availableTimesDao = new MemoryAvailableTimesDao();
+			availableTimesDao = new MysqlAvailableTimesDao(getJdbcTemplate());
 		}
 		return availableTimesDao;
 	}
@@ -32,8 +32,8 @@ public enum DaoFactory {
 			MysqlDataSource dataSource = new MysqlDataSource();
 			dataSource.setUser("root");
 			dataSource.setPassword("databazy");
-//			dataSource.setDatabaseName("registracia_itat");
-			dataSource.setUrl("jdbc:mysql://localhost/driving_school?serverTimezone=Europe/Bratislava");
+			dataSource.setDatabaseName("mydb");
+			dataSource.setUrl("jdbc:mysql://localhost/mydb?serverTimezone=Europe/Bratislava");//driving_school
 			jdbcTemplate = new JdbcTemplate(dataSource);
 		}
 		return jdbcTemplate;

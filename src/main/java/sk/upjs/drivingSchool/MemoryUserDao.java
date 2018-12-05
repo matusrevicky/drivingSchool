@@ -182,7 +182,7 @@ public class MemoryUserDao implements UserDao {
 	public List<User> getAll(String role, boolean active) {
 		List<User> list = new ArrayList<User>();
 		for (User u : getAll()) {
-			if (u.getRole() == role && u.isActive() == active) {
+			if (u.getRole().equals(role) && u.isActive() == active) {
 				list.add(u);
 			}
 		}

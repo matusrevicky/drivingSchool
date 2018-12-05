@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class User {
-	private Long userId;
+	private Long id = (long) 1;//FIXME
 	private String fname;
 	private String lname;
 	private String username;
@@ -21,11 +21,11 @@ public class User {
 	private HashSet<AvailableTime> availableTimes = new HashSet<AvailableTime>();
 
 	public Long getUserId() {
-		return userId;
+		return (long) 1;//id;//FIXME
 	}
 
 	public void setUserId(Long userId) {
-		this.userId = userId;
+		this.id = userId;
 	}
 
 	public String getFname() {

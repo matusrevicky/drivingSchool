@@ -8,6 +8,7 @@ import sk.upjs.drivingSchool.UserDao;
 import sk.upjs.drivingSchool.login.UserSessionManager;
 import jfxtras.scene.control.agenda.Agenda;
 
+import java.time.LocalDateTime;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -57,6 +58,9 @@ public class HomeSceneController {
 	private void initializeUser() {
 		long userId = UserSessionManager.INSTANCE.getCurrentUserSession().getUserId();
 		loggedInUser = userDao.get(userId);
+		
+		loggedInUser.setLastLogin(LocalDateTime.now());
+		userDao.save(loggedInUser);
 	}
 
 	@FXML

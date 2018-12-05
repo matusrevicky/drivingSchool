@@ -238,11 +238,12 @@ public class AvailableTimesController {
 		if (!users.isEmpty()) {
 			nameComboBox.getSelectionModel().select(users.get(0));
 		}
+		checkSaveButtonVisibility();
 	}
 
 	private void checkSaveButtonVisibility() {
 
-		if (userModel != null && loggedInUser == userModel.getUser()) {
+		if (userModel != null && loggedInUser.getUserId() == userModel.getUser().getUserId()) {
 			// saveButton.setDisable(false);
 			saveButton.setVisible(true);
 		} else {

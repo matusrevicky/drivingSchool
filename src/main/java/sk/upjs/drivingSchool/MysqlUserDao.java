@@ -1,5 +1,6 @@
 package sk.upjs.drivingSchool;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ private JdbcTemplate jdbcTemplate;
 	public void add(User user) {
 		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
 		simpleJdbcInsert.withTableName("User");
-		simpleJdbcInsert.usingGeneratedKeyColumns("userId");
+		simpleJdbcInsert.usingGeneratedKeyColumns("id");
 		simpleJdbcInsert.usingColumns("fname", "lname", "username", "email", "password", "phoneNumber", "dateCreated", 
 				"lastModified", "lastLogin", "active", "ridesDone", "role");
 		Map<String,Object> hodnoty = new HashMap<>();
@@ -44,7 +45,7 @@ private JdbcTemplate jdbcTemplate;
 
 	@Override
 	public List<User> getAll() {
-		String sql = "SELECT fname, lname, username, email, password, phoneNumber, dateCreated, lastModified, lastLogin, active, ridesDone, role FROM User";
+		String sql = "SELECT id, fname, lname, username, email, password, phoneNumber, dateCreated, lastModified, lastLogin, active, ridesDone, role FROM User";
 		List<User> users = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
 		AvailableTimesDao availableTimeDao = DaoFactory.INSTANCE.getAvailableTimesDao();
 		for (User p : users) {
@@ -63,7 +64,7 @@ private JdbcTemplate jdbcTemplate;
 		} else {
 			String sql = "UPDATE User SET fname = ?, lname = ?, username = ?, email = ?,"
 					+ " password = ?, phoneNumber = ?, dateCreated = ?, lastModified = ?,"
-					+ " lastLogin = ?, active = ?, ridesDone = ?, role "
+					+ " lastLogin = ?, active = ?, ridesDone = ?, role = ?"
 					+ "WHERE id = ?";
 			jdbcTemplate.update(sql, u.getFname(), u.getLname(), u.getUsername(), u.getEmail(),
 					u.getPassword(), u.getPhoneNumber(), u.getDateCreated(), u.getLastModified(),
@@ -83,13 +84,14 @@ private JdbcTemplate jdbcTemplate;
 
 	@Override
 	public List<User> getAll(String role, boolean active) {
-		List<User> list = getAll();
-		for(User u : list) {
-			if(u.getRole() != role || u.isActive() != active) {
-				list.remove(u);
+		List<User> originalList = getAll();
+		List<User> returnList = new ArrayList<User>();
+		for(User u : originalList) {
+			if(u.getRole().equals(role) && u.isActive() == active) {
+				returnList.add(u);
 			}
 		}
-		return list;
+		return returnList;
 	}
 
 	/*@Override
@@ -101,9 +103,10 @@ private JdbcTemplate jdbcTemplate;
 	@Override
 	public User get(String username) throws EmptyResultDataAccessException {
 		//FIXME prerobit
-		User thisUser = new User();
+		User thisUser = null;
 		for(User u : getAll()) {
-			if(u.getUsername() == username) {
+			String u1 = u.getUsername();
+			if(u1.equals(username)) {
 				thisUser = u;
 				break;
 			}
