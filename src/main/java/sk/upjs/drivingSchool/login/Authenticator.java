@@ -32,7 +32,7 @@ public enum Authenticator {
 			throw new UserNotActiveException();
 		}
 		user.setLastLogin(LocalDateTime.now());
-		UserSession userSession = new UserSession(user, user.getUserId(), user.getRole());
+		UserSession userSession = new UserSession(user, user.getId(), user.getRole());
 		UserSessionManager.INSTANCE.setCurrentUserSession(userSession);
 
 		return userSession;
@@ -65,7 +65,7 @@ public enum Authenticator {
 		String hashedPassword = hashPassword(password);
 
 		User createdUser = userDao.create(name, surname, phone, username, email, hashedPassword);
-		UserSession userSession = new UserSession(createdUser, createdUser.getUserId(), createdUser.getRole());
+		UserSession userSession = new UserSession(createdUser, createdUser.getId(), createdUser.getRole());
 		UserSessionManager.INSTANCE.setCurrentUserSession(userSession);
 
 		return userSession;

@@ -40,16 +40,21 @@ private JdbcTemplate jdbcTemplate;
 		hodnoty.put("ridesDone",user.getRidesDone());
 		hodnoty.put("role", user.getRole());
 		Long id = simpleJdbcInsert.executeAndReturnKey(hodnoty).longValue();
-		user.setUserId(id);
+		user.setId(id);
 	}
 
 	@Override
 	public List<User> getAll() {
-		String sql = "SELECT id, fname, lname, username, email, password, phoneNumber, dateCreated, lastModified, lastLogin, active, ridesDone, role FROM User";
+		String sql = "SELECT id, fname, lname, username, email, password, phoneNumber, dateCreated, "
+				+ "lastModified, lastLogin, active, ridesDone, role FROM User";
 		List<User> users = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
 		AvailableTimesDao availableTimeDao = DaoFactory.INSTANCE.getAvailableTimesDao();
 		for (User p : users) {
-			p.setAvailableTimes(availableTimeDao.getAvailableTimesByUserId(p.getUserId()));
+			if(p.getId() == null) {
+				int x = 0;
+				x++;
+			}
+			p.setAvailableTimes(availableTimeDao.getAvailableTimesByUserId(p.getId()));
 			//TODO p.setReservation
 		}
 		return users;
@@ -59,7 +64,7 @@ private JdbcTemplate jdbcTemplate;
 	public void save(User u) throws NullPointerException {
 		if (u == null) 
 			throw new NullPointerException("User cannot be null");
-		if (u.getUserId() == null) {
+		if (u.getId() == null) {
 			add(u);
 		} else {
 			String sql = "UPDATE User SET fname = ?, lname = ?, username = ?, email = ?,"
@@ -69,7 +74,7 @@ private JdbcTemplate jdbcTemplate;
 			jdbcTemplate.update(sql, u.getFname(), u.getLname(), u.getUsername(), u.getEmail(),
 					u.getPassword(), u.getPhoneNumber(), u.getDateCreated(), u.getLastModified(),
 					u.getLastLogin(), u.isActive(),	u.getRidesDone(), u.getRole(),
-					u.getUserId());
+					u.getId());
 		}
 	}
 
@@ -119,7 +124,7 @@ private JdbcTemplate jdbcTemplate;
 		//FIXME prerobit
 				User thisUser = new User();
 				for(User u : getAll()) {
-					if(u.getUserId() == id) {
+					if(u.getId() == id) {
 						thisUser = u;
 						break;
 					}

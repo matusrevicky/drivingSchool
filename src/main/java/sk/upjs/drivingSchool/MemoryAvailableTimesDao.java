@@ -13,7 +13,7 @@ public class MemoryAvailableTimesDao implements AvailableTimesDao{
 		HashSet<AvailableTime> availableTimes = new HashSet<>();
 		List<User> users = userDao.getAll();
 		for(User u : users) {
-			if(u.getUserId() == userId) {
+			if(u.getId() == userId) {
 				availableTimes = u.getAvailableTimes();
 				break;
 			}
@@ -26,7 +26,7 @@ public class MemoryAvailableTimesDao implements AvailableTimesDao{
 		User u = userDao.get(userId);
 		for(AvailableTime a : availableTimes) {
 			a.setId(++lastId);		
-			u.setUserId(userId);
+			u.setId(userId);
 		}
 		u.setAvailableTimes(availableTimes);
 		userDao.save(u);

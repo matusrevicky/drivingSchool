@@ -167,7 +167,7 @@ public class AvailableTimesController {
 			@Override
 			public void handle(ActionEvent event) {
 				saveAvailableTimes();
-				userDao.get(loggedInUser.getUserId()).setLastModified(LocalDateTime.now());
+				userDao.get(loggedInUser.getId()).setLastModified(LocalDateTime.now());
 
 			}
 		});
@@ -243,7 +243,7 @@ public class AvailableTimesController {
 
 	private void checkSaveButtonVisibility() {
 
-		if (userModel != null && loggedInUser.getUserId() == userModel.getUser().getUserId()) {
+		if (userModel != null && loggedInUser.getId() == userModel.getUser().getId()) {
 			// saveButton.setDisable(false);
 			saveButton.setVisible(true);
 		} else {
@@ -274,7 +274,7 @@ public class AvailableTimesController {
 		StringBuilder sb = new StringBuilder();
 		DateTimeFormatter formatter;
 		sb.append("BEGIN:VCALENDAR\r\n");
-		for (AvailableTime availableTime : availableTimesDao.getAvailableTimesByUserId(userModel.getUser().getUserId())) {//userModel.getAvailableTimes()
+		for (AvailableTime availableTime : availableTimesDao.getAvailableTimesByUserId(userModel.getUser().getId())) {//userModel.getAvailableTimes()
 			sb.append("BEGIN:VEVENT\r\n" + "SUMMARY:Voľný čas\r\n" + "CATEGORIES:group00\r\n"
 					+ "DTSTART;TZID=Europe/Prague:");
 
@@ -305,7 +305,7 @@ public class AvailableTimesController {
 
 		for (VEvent event : myCalendar.getVEvents()) {
 			AvailableTime newAvailableTime = new AvailableTime();
-			newAvailableTime.setUserId(loggedInUser.getUserId());// TODO generovanie id, treba vobec?
+			newAvailableTime.setUserId(loggedInUser.getId());// TODO generovanie id, treba vobec?
 
 			String str = event.getDateTimeStart().getValue().toString();
 			LocalDateTime l = LocalDateTime.parse(str.substring(0, str.indexOf('+')));
@@ -318,7 +318,7 @@ public class AvailableTimesController {
 			hashSetOfAvailableTimes.add(newAvailableTime);
 		}
 		
-		availableTimesDao.saveAvailableTimesWithUserId(hashSetOfAvailableTimes, loggedInUser.getUserId());
+		availableTimesDao.saveAvailableTimesWithUserId(hashSetOfAvailableTimes, loggedInUser.getId());
 		//userDao.get(loggedInUser.getUserId()).setAvailableTimes(hashSetOfAvailableTimes);
 	}
 

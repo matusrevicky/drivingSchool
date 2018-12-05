@@ -42,7 +42,7 @@ public class MemoryUserDao implements UserDao {
 		AvailableTime time = new AvailableTime();
 		time.setStartTime(LocalDateTime.now().withHour(3));
 		time.setEndTime(LocalDateTime.now().withHour(12));
-		time.setUserId(u.getUserId());
+		time.setUserId(u.getId());
 		HashSet<AvailableTime> times = new HashSet<>();
 		times.add(time);
 		u.setAvailableTimes(times);
@@ -63,12 +63,12 @@ public class MemoryUserDao implements UserDao {
 		times = new HashSet<>();
 		time.setStartTime(LocalDateTime.now().withHour(6));
 		time.setEndTime(LocalDateTime.now().withHour(11));
-		time.setUserId(u2.getUserId());
+		time.setUserId(u2.getId());
 		times.add(time);
 		time = new AvailableTime();
 		time.setStartTime(LocalDateTime.now().withHour(12));
 		time.setEndTime(LocalDateTime.now().withHour(15));
-		time.setUserId(u2.getUserId());
+		time.setUserId(u2.getId());
 		times.add(time);
 		u2.setAvailableTimes(times);
 		
@@ -94,7 +94,7 @@ public class MemoryUserDao implements UserDao {
 	
 	@Override
 	public void add(User user) {
-		user.setUserId(++lastId);
+		user.setId(++lastId);
 		users.add(user);
 	}
 
@@ -107,11 +107,11 @@ public class MemoryUserDao implements UserDao {
 	@Override
 	public void save(User user) {
 		if (user != null) {
-			if (user.getUserId() == null) {
+			if (user.getId() == null) {
 				add(user);
 			} else {
 				for (int i = 0; i < users.size(); i++) {
-					if (users.get(i).getUserId().equals(user.getUserId())) {
+					if (users.get(i).getId().equals(user.getId())) {
 						users.set(i, user);
 						break;
 					}
@@ -125,7 +125,7 @@ public class MemoryUserDao implements UserDao {
 		Iterator<User> it = users.iterator();
 		while (it.hasNext()) {
 			User p = it.next();
-			if (p.getUserId().equals(id)) {
+			if (p.getId().equals(id)) {
 				it.remove();
 				return;
 			}
@@ -171,7 +171,7 @@ public class MemoryUserDao implements UserDao {
 		Iterator<User> it = users.iterator();
 		while (it.hasNext()) {
 			User p = it.next();
-			if (p.getUserId()==id) {
+			if (p.getId()==id) {
 				return p;
 			}
 		}
