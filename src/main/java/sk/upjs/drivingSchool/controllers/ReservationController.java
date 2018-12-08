@@ -122,7 +122,8 @@ public class ReservationController {
 
 	private boolean showAllStudentsChecked = false;
 	private boolean showAllInstructorsChecked = false;
-	
+	private boolean showAllStudentsChanged = false;
+	private boolean showAllInstructorsChanged = false;
 	private String searchInstructorString = "";
 	private String searchStudentString = "";
 
@@ -160,8 +161,8 @@ public class ReservationController {
 				studentModel = new UserFxModel(loggedInUser);
 				studentComboBox.getSelectionModel().select(loggedInUser);
 			} else {
-				//showAllInstructors.setSelected(true);
-				//showAllStudentsChecked = true;
+				// showAllInstructors.setSelected(true);
+				// showAllStudentsChecked = true;
 			}
 		}
 	}
@@ -225,6 +226,7 @@ public class ReservationController {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				showAllInstructorsChecked = newValue;
+				showAllInstructorsChanged = true;
 				refreshComboBoxes();
 			}
 		});
@@ -232,6 +234,7 @@ public class ReservationController {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				showAllStudentsChecked = newValue;
+				showAllStudentsChanged = true;
 				refreshComboBoxes();
 			}
 		});
@@ -340,34 +343,38 @@ public class ReservationController {
 
 	private void refreshComboBoxes() {
 
-		if (showAllStudentsChecked) {
-			studentComboBox.setItems(null);
-			studentComboBox.setDisable(true);
-		} else {
-			studentComboBox.setDisable(false);
-			List<User> students = userDao.getAll(Role.STUDENT.getName(), true);
-			studentComboBox.setItems(FXCollections.observableList(students));
-			if (!students.isEmpty()) {
-				if (searchStudentString == null || searchStudentString.isEmpty()) {
-					studentComboBox.getSelectionModel().select(students.get(0));
-				} else {
-					System.out.println("TODO filter");// TODO filter podla mena
+		if (showAllStudentsChanged) {
+			if (showAllStudentsChecked) {
+				studentComboBox.setItems(null);
+				studentComboBox.setDisable(true);
+			} else {
+				studentComboBox.setDisable(false);
+				List<User> students = userDao.getAll(Role.STUDENT.getName(), true);
+				studentComboBox.setItems(FXCollections.observableList(students));
+				if (!students.isEmpty()) {
+					if (searchStudentString == null || searchStudentString.isEmpty()) {
+						studentComboBox.getSelectionModel().select(students.get(0));
+					} else {
+						System.out.println("TODO filter");// TODO filter podla mena
+					}
 				}
 			}
 		}
 
-		if (showAllInstructorsChecked) {
-			instructorComboBox.setItems(null);
-			instructorComboBox.setDisable(true);
-		} else {
-			instructorComboBox.setDisable(false);
-			List<User> instructors = userDao.getAll(Role.TEACHER.getName(), true);
-			instructorComboBox.setItems(FXCollections.observableList(instructors));
-			if (!instructors.isEmpty()) {
-				if (searchInstructorString == null || searchInstructorString.isEmpty()) {
-					instructorComboBox.getSelectionModel().select(instructors.get(0));
-				} else {
-					System.out.println("TODO filter");// TODO filter podla mena
+		if (showAllInstructorsChanged) {
+			if (showAllInstructorsChecked) {
+				instructorComboBox.setItems(null);
+				instructorComboBox.setDisable(true);
+			} else {
+				instructorComboBox.setDisable(false);
+				List<User> instructors = userDao.getAll(Role.TEACHER.getName(), true);
+				instructorComboBox.setItems(FXCollections.observableList(instructors));
+				if (!instructors.isEmpty()) {
+					if (searchInstructorString == null || searchInstructorString.isEmpty()) {
+						instructorComboBox.getSelectionModel().select(instructors.get(0));
+					} else {
+						System.out.println("TODO filter");// TODO filter podla mena
+					}
 				}
 			}
 		}
@@ -382,7 +389,8 @@ public class ReservationController {
 			}
 		}
 
-		// initializeCalendar();
+		showAllInstructorsChanged = false;
+		showAllStudentsChanged = false;
 	}
 
 	private void checkSaveComponentsVisibility() {
