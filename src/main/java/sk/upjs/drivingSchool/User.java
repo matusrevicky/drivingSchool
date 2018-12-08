@@ -19,6 +19,7 @@ public class User {
 	private Integer ridesDone = 0;
 	private String role = Role.STUDENT.getName();
 	private HashSet<AvailableTime> availableTimes = new HashSet<AvailableTime>();
+	private HashSet<Reservation> reservations = new HashSet<Reservation>();
 
 	public Long getId() {
 		return id;
@@ -130,6 +131,14 @@ public class User {
 
 	public void setAvailableTimes(HashSet availableTimes) {
 		this.availableTimes = availableTimes;
+	}
+	
+	public HashSet<Reservation> getReservations() {
+		return reservations;
+	}
+
+	public void setReservations(HashSet reservations) {
+		this.reservations = reservations;
 	}
 
 	@Override

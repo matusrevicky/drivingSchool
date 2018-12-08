@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 public class MysqlAvailableTimesDao implements AvailableTimesDao {
+	
 	private JdbcTemplate jdbcTemplate;
 
 	public MysqlAvailableTimesDao(JdbcTemplate jdbcTemplate) {

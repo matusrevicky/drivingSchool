@@ -1,16 +1,16 @@
 package sk.upjs.drivingSchool;
 
-import java.time.LocalDateTime;
-
 public class Reservation {
-	private Long reservationId;
-	private LocalDateTime startDate;
-	private LocalDateTime endDate;
+	//private Long reservationId;
+	//private LocalDateTime startDate;
+	//private LocalDateTime endDate;
+	//private LocalDateTime dateCreated;
+	private String eventString;
 	private Long instructorId;
-	private Long stundetId;
+	private Long studentId;
 	private boolean seenByStudent;
-	private LocalDateTime dateCreated;
-	public Long getReservationId() {
+	
+	/*public Long getReservationId() {
 		return reservationId;
 	}
 	public void setReservationId(Long reservationId) {
@@ -28,37 +28,34 @@ public class Reservation {
 	public void setEndDate(LocalDateTime endDate) {
 		this.endDate = endDate;
 	}
+	public LocalDateTime getDateCreated() {
+		return dateCreated;
+	}
+	public void setDateCreated(LocalDateTime dateCreated) {
+		this.dateCreated = dateCreated;
+	}*/
 	public Long getInstructorId() {
 		return instructorId;
 	}
 	public void setInstructorId(Long instructorId) {
 		this.instructorId = instructorId;
 	}
-	public Long getStundetId() {
-		return stundetId;
+	public Long getStudentId() {
+		return studentId;
 	}
-	public void setStundetId(Long stundetId) {
-		this.stundetId = stundetId;
+	public void setStudentId(Long stundetId) {
+		this.studentId = stundetId;
 	}
-	public boolean isSeenByStudent() {
+	public boolean getSeenByStudent() {
 		return seenByStudent;
 	}
 	public void setSeenByStudent(boolean seenByStudent) {
 		this.seenByStudent = seenByStudent;
+	}	
+	public String getEventString() {
+		return eventString;
 	}
-	public LocalDateTime getDateCreated() {
-		return dateCreated;
-	}
-	public void setDateCreated(LocalDateTime dateCreated) {
-		this.dateCreated = dateCreated;
-	}
-	@Override
-	public String toString() {
-		return "Reservation [reservationId=" + reservationId + ", startDate=" + startDate + ", endDate=" + endDate
-				+ ", instructorId=" + instructorId + ", stundetId=" + stundetId + ", seenByStudent=" + seenByStudent
-				+ ", dateCreated=" + dateCreated + "]";
-	}
-	
-	
-	
+	public void setEventString(String eventString) {
+		this.eventString = eventString;
+	}	
 }

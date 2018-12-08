@@ -37,6 +37,7 @@ import sk.upjs.drivingSchool.UserDao;
 import sk.upjs.drivingSchool.UserFxModel;
 import sk.upjs.drivingSchool.login.UserSessionManager;
 
+@SuppressWarnings("restriction")
 public class AvailableTimesController {
 
 	@FXML
@@ -121,7 +122,8 @@ public class AvailableTimesController {
 
 			@Override
 			public void handle(ActionEvent event) {
-				App.switchScene(new HomeSceneController(), "HomeScreen.fxml");
+				//App.switchScene(new HomeSceneController(), "HomeScreen.fxml");
+				App.switchScene(new ReservationController(), "ReservationScreen.fxml");
 			}
 		});
 		editMyProfileButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -188,6 +190,7 @@ public class AvailableTimesController {
 		});
 	}
 
+
 	private void initializeComponentsWithCurrectUserModel() {
 
 		List<String> roles = Role.STUDENT.getAllNames();
@@ -238,6 +241,7 @@ public class AvailableTimesController {
 		if (!users.isEmpty()) {
 			nameComboBox.getSelectionModel().select(users.get(0));
 		}
+		initializeCalendar();
 		checkSaveButtonVisibility();
 	}
 
@@ -305,7 +309,7 @@ public class AvailableTimesController {
 
 		for (VEvent event : myCalendar.getVEvents()) {
 			AvailableTime newAvailableTime = new AvailableTime();
-			newAvailableTime.setUserId(loggedInUser.getId());// TODO generovanie id, treba vobec?
+			newAvailableTime.setUserId(loggedInUser.getId());
 
 			String str = event.getDateTimeStart().getValue().toString();
 			LocalDateTime l = LocalDateTime.parse(str.substring(0, str.indexOf('+')));

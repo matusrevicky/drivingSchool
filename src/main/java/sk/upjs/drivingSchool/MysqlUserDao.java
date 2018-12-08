@@ -11,10 +11,10 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-public class MysqlUserDao implements UserDao{
-	
-private JdbcTemplate jdbcTemplate;
-	
+public class MysqlUserDao implements UserDao {
+
+	private JdbcTemplate jdbcTemplate;
+
 	public MysqlUserDao(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
@@ -24,20 +24,20 @@ private JdbcTemplate jdbcTemplate;
 		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
 		simpleJdbcInsert.withTableName("User");
 		simpleJdbcInsert.usingGeneratedKeyColumns("id");
-		simpleJdbcInsert.usingColumns("fname", "lname", "username", "email", "password", "phoneNumber", "dateCreated", 
+		simpleJdbcInsert.usingColumns("fname", "lname", "username", "email", "password", "phoneNumber", "dateCreated",
 				"lastModified", "lastLogin", "active", "ridesDone", "role");
-		Map<String,Object> hodnoty = new HashMap<>();
-		hodnoty.put("fname",user.getFname());
-		hodnoty.put("lname",user.getLname());
-		hodnoty.put("username",user.getUsername());
-		hodnoty.put("email",user.getEmail());
-		hodnoty.put("password",user.getPassword());
-		hodnoty.put("phoneNumber",user.getPhoneNumber());
-		hodnoty.put("dateCreated",user.getDateCreated());
-		hodnoty.put("lastModified",user.getLastModified());
-		hodnoty.put("lastLogin",user.getLastLogin());
-		hodnoty.put("active",user.isActive());
-		hodnoty.put("ridesDone",user.getRidesDone());
+		Map<String, Object> hodnoty = new HashMap<>();
+		hodnoty.put("fname", user.getFname());
+		hodnoty.put("lname", user.getLname());
+		hodnoty.put("username", user.getUsername());
+		hodnoty.put("email", user.getEmail());
+		hodnoty.put("password", user.getPassword());
+		hodnoty.put("phoneNumber", user.getPhoneNumber());
+		hodnoty.put("dateCreated", user.getDateCreated());
+		hodnoty.put("lastModified", user.getLastModified());
+		hodnoty.put("lastLogin", user.getLastLogin());
+		hodnoty.put("active", user.isActive());
+		hodnoty.put("ridesDone", user.getRidesDone());
 		hodnoty.put("role", user.getRole());
 		Long id = simpleJdbcInsert.executeAndReturnKey(hodnoty).longValue();
 		user.setId(id);
@@ -49,40 +49,39 @@ private JdbcTemplate jdbcTemplate;
 				+ "lastModified, lastLogin, active, ridesDone, role FROM User";
 		List<User> users = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
 		AvailableTimesDao availableTimeDao = DaoFactory.INSTANCE.getAvailableTimesDao();
-		for (User p : users) {
-			if(p.getId() == null) {
-				int x = 0;
-				x++;
+		ReservationDao reservationDao = DaoFactory.INSTANCE.getReservationDao();
+		for (User u : users) {
+			u.setAvailableTimes(availableTimeDao.getAvailableTimesByUserId(u.getId()));
+			if (u.getRole().equals(Role.TEACHER.toString())) {
+				u.setReservations(reservationDao.getReservationsByInstructorId(u.getId()));
+			} else if (u.getRole().equals(Role.TEACHER.toString())) {
+				u.setReservations(reservationDao.getReservationsByStudentId(u.getId()));
 			}
-			p.setAvailableTimes(availableTimeDao.getAvailableTimesByUserId(p.getId()));
-			//TODO p.setReservation
 		}
 		return users;
 	}
 
 	@Override
 	public void save(User u) throws NullPointerException {
-		if (u == null) 
+		if (u == null)
 			throw new NullPointerException("User cannot be null");
 		if (u.getId() == null) {
 			add(u);
 		} else {
 			String sql = "UPDATE User SET fname = ?, lname = ?, username = ?, email = ?,"
 					+ " password = ?, phoneNumber = ?, dateCreated = ?, lastModified = ?,"
-					+ " lastLogin = ?, active = ?, ridesDone = ?, role = ?"
-					+ "WHERE id = ?";
-			jdbcTemplate.update(sql, u.getFname(), u.getLname(), u.getUsername(), u.getEmail(),
-					u.getPassword(), u.getPhoneNumber(), u.getDateCreated(), u.getLastModified(),
-					u.getLastLogin(), u.isActive(),	u.getRidesDone(), u.getRole(),
-					u.getId());
+					+ " lastLogin = ?, active = ?, ridesDone = ?, role = ?" + "WHERE id = ?";
+			jdbcTemplate.update(sql, u.getFname(), u.getLname(), u.getUsername(), u.getEmail(), u.getPassword(),
+					u.getPhoneNumber(), u.getDateCreated(), u.getLastModified(), u.getLastLogin(), u.isActive(),
+					u.getRidesDone(), u.getRole(), u.getId());
 		}
 	}
 
 	@Override
-	public void delete(long id){
+	public void delete(long id) {
 		int deleted = jdbcTemplate.update("DELETE FROM User WHERE id = ?", id);
 		if (deleted == 0) {
-			//throw new UserNotFoundException(id);
+			// throw new UserNotFoundException(id);
 			System.out.println("UserNotFoundException, id:" + id);
 		}
 	}
@@ -91,27 +90,26 @@ private JdbcTemplate jdbcTemplate;
 	public List<User> getAll(String role, boolean active) {
 		List<User> originalList = getAll();
 		List<User> returnList = new ArrayList<User>();
-		for(User u : originalList) {
-			if(u.getRole().equals(role) && u.isActive() == active) {
+		for (User u : originalList) {
+			if (u.getRole().equals(role) && u.isActive() == active) {
 				returnList.add(u);
 			}
 		}
 		return returnList;
 	}
 
-	/*@Override
-	public User create(String email, String password) throws DuplicateKeyException {
-		// TODO Auto-generated method stub
-		return null;
-	}*/
+	/*
+	 * @Override public User create(String email, String password) throws
+	 * DuplicateKeyException { // TODO Auto-generated method stub return null; }
+	 */
 
 	@Override
 	public User get(String username) throws EmptyResultDataAccessException {
-		//FIXME prerobit
+		// FIXME prerobit
 		User thisUser = null;
-		for(User u : getAll()) {
+		for (User u : getAll()) {
 			String u1 = u.getUsername();
-			if(u1.equals(username)) {
+			if (u1.equals(username)) {
 				thisUser = u;
 				break;
 			}
@@ -121,15 +119,15 @@ private JdbcTemplate jdbcTemplate;
 
 	@Override
 	public User get(long id) throws EmptyResultDataAccessException {
-		//FIXME prerobit
-				User thisUser = new User();
-				for(User u : getAll()) {
-					if(u.getId() == id) {
-						thisUser = u;
-						break;
-					}
-				}
-				return thisUser;
+		// FIXME prerobit
+		User thisUser = new User();
+		for (User u : getAll()) {
+			if (u.getId() == id) {
+				thisUser = u;
+				break;
+			}
+		}
+		return thisUser;
 	}
 
 	@Override

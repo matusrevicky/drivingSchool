@@ -80,7 +80,8 @@ public class HomeSceneController {
 
 			@Override
 			public void handle(ActionEvent event) {
-				App.switchScene(new HomeSceneController(), "HomeScreen.fxml");
+				//App.switchScene(new HomeSceneController(), "HomeScreen.fxml");
+				App.switchScene(new ReservationController(), "ReservationScreen.fxml");
 			}
 		});
 		editMyProfileButton.setOnAction(new EventHandler<ActionEvent>() {

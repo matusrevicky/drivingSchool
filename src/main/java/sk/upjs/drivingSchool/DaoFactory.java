@@ -10,6 +10,7 @@ public enum DaoFactory {
 	private JdbcTemplate jdbcTemplate;
 	private UserDao userDao;
 	private AvailableTimesDao availableTimesDao;
+	private ReservationDao reservationDao;
 	
 	
 	public UserDao getUserDao() {
@@ -25,6 +26,13 @@ public enum DaoFactory {
 			availableTimesDao = new MysqlAvailableTimesDao(getJdbcTemplate());
 		}
 		return availableTimesDao;
+	}
+	public ReservationDao getReservationDao() {
+		if (reservationDao == null) {
+			//memoryDao nieje
+			reservationDao = new MysqlReservationDao(getJdbcTemplate());
+		}
+		return reservationDao;
 	}
 	
 	private JdbcTemplate getJdbcTemplate() {

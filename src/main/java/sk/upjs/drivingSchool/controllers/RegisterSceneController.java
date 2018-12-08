@@ -137,7 +137,8 @@ public class RegisterSceneController {
 					UserSession userSession = authenticator.register(userModel.getFname(), userModel.getLname(),
 							userModel.getPhoneNumber(), userModel.getUsername(), userModel.getEmail(),
 							userModel.getPassword(), userModel.getPasswordAgain());
-					App.switchScene(new HomeSceneController(), "HomeScreen.fxml");
+					//App.switchScene(new HomeSceneController(), "HomeScreen.fxml");
+					App.switchScene(new ReservationController(), "ReservationScreen.fxml");
 				} catch (UserAlreadyExistsException e) {
 					changeColorRed(usernameTextField);
 					usernameLabel.setText(USER_EXISTS);

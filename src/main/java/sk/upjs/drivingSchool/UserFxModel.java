@@ -32,6 +32,7 @@ public class UserFxModel {
 	private IntegerProperty ridesDone = new SimpleIntegerProperty();
 	private StringProperty role = new SimpleStringProperty();
 	private HashSet<AvailableTime> availableTimes = new HashSet<AvailableTime>();
+	private HashSet<Reservation> reservations = new HashSet<Reservation>();
 
 	public UserFxModel(User user) {
 		this.user = user;
@@ -47,6 +48,7 @@ public class UserFxModel {
 		setRidesDone(user.getRidesDone());
 		setActive(user.isActive());
 		setAvailableTimes(user.getAvailableTimes());
+		setReservations(user.getReservations());
 	}
 	public User getUser() {
 		user.setFname(getFname());
@@ -61,6 +63,7 @@ public class UserFxModel {
 		user.setRole(getRole());
 		user.setRidesDone(getRidesDone());
 		user.setAvailableTimes(getAvailableTimes());
+		user.setReservations(getReservations());
 		return user;
 	}	
 	
@@ -201,5 +204,12 @@ public class UserFxModel {
 	}
 	public void setAvailableTimes(HashSet availableTimes) {
 		this.availableTimes = availableTimes;
+	}
+	
+	public HashSet<Reservation> getReservations() {
+		return reservations;
+	}
+	public void setReservations(HashSet reservations) {
+		this.reservations = reservations;
 	}
 }
