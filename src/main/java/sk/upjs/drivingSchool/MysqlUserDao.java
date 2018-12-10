@@ -11,6 +11,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
+import sk.upjs.drivingSchool.login.Authenticator;
+
 public class MysqlUserDao implements UserDao {
 
 	private JdbcTemplate jdbcTemplate;
@@ -68,12 +70,21 @@ public class MysqlUserDao implements UserDao {
 		if (u.getId() == null) {
 			add(u);
 		} else {
-			String sql = "UPDATE User SET fname = ?, lname = ?, username = ?, email = ?,"
-					+ " password = ?, phoneNumber = ?, dateCreated = ?, lastModified = ?,"
-					+ " lastLogin = ?, active = ?, ridesDone = ?, role = ?" + "WHERE id = ?";
-			jdbcTemplate.update(sql, u.getFname(), u.getLname(), u.getUsername(), u.getEmail(), u.getPassword(),
-					u.getPhoneNumber(), u.getDateCreated(), u.getLastModified(), u.getLastLogin(), u.isActive(),
-					u.getRidesDone(), u.getRole(), u.getId());
+			if (u.getPassword() == null || u.getPassword().isEmpty()) {
+				String sql = "UPDATE User SET fname = ?, lname = ?, username = ?, email = ?,"
+						+ " phoneNumber = ?, dateCreated = ?, lastModified = ?,"
+						+ " lastLogin = ?, active = ?, ridesDone = ?, role = ?" + "WHERE id = ?";
+				jdbcTemplate.update(sql, u.getFname(), u.getLname(), u.getUsername(), u.getEmail(),
+						u.getPhoneNumber(), u.getDateCreated(), u.getLastModified(), u.getLastLogin(), u.isActive(),
+						u.getRidesDone(), u.getRole(), u.getId());
+			} else {
+				String sql = "UPDATE User SET fname = ?, lname = ?, username = ?, email = ?,"
+						+ " password = ?, phoneNumber = ?, dateCreated = ?, lastModified = ?,"
+						+ " lastLogin = ?, active = ?, ridesDone = ?, role = ?" + "WHERE id = ?";
+				jdbcTemplate.update(sql, u.getFname(), u.getLname(), u.getUsername(), u.getEmail(), Authenticator.INSTANCE.hashPassword(u.getPassword()),
+						u.getPhoneNumber(), u.getDateCreated(), u.getLastModified(), u.getLastLogin(), u.isActive(),
+						u.getRidesDone(), u.getRole(), u.getId());
+			}
 		}
 	}
 

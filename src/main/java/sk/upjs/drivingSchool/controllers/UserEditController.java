@@ -28,23 +28,46 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import sk.upjs.drivingSchool.User;
 import sk.upjs.drivingSchool.UserFxModel;
+import sk.upjs.drivingSchool.login.Authenticator;
+import sk.upjs.drivingSchool.login.UserSessionManager;
 import sk.upjs.drivingSchool.UserDao;
 import sk.upjs.drivingSchool.DaoFactory;
 import sk.upjs.drivingSchool.Role;
 
+@SuppressWarnings("restriction")
 public class UserEditController {
 
 	private UserDao userDao = DaoFactory.INSTANCE.getUserDao();
 	private UserFxModel userModel;
 	private User user;
+	private User loggedInUser;
 	
 	public UserEditController(User user) {
     	this.user = user;
     	this.userModel = new UserFxModel(user);
     }
+
+	private void initializeUser() {
+		long userId = UserSessionManager.INSTANCE.getCurrentUserSession().getUserId();
+		loggedInUser = userDao.get(userId);
+		
+		loggedInUser.setLastLogin(LocalDateTime.now());
+		//userDao.save(loggedInUser);
+	}
 	
 	@FXML
 	void initialize() {
+		initializeUser();
+		if (loggedInUser.getRole().equals(Role.STUDENT.getName())) {
+			roleComboBox.setDisable(true);
+			ridesDoneSpinner.setDisable(true);
+			checkBoxActive.setDisable(true);
+		} else {
+			roleComboBox.setDisable(false);
+			ridesDoneSpinner.setDisable(false);
+			checkBoxActive.setDisable(false);
+		}
+		
 		List<String> roles = Role.STUDENT.getAllNames();
 		ObservableList<String> f = FXCollections.observableList(roles);
 		roleComboBox.setItems(f);
@@ -63,6 +86,11 @@ public class UserEditController {
 
     	roleComboBox.getSelectionModel().select(userModel.getRole());
 		
+    	userModel.passwordAgainProperty().bind(passwordAgainTextField.textProperty());
+    	userModel.passwordProperty().bind(passwordTextField.textProperty());
+    //	passwordTextField.textProperty().bind(userModel.passwordProperty());
+    
+    	
 		fnameTextField.textProperty().bindBidirectional(userModel.fnameProperty());
 		lnameTextField.textProperty().bindBidirectional(userModel.lnameProperty());
 		usernameTextField.textProperty().bindBidirectional(userModel.usernameProperty());
@@ -83,6 +111,8 @@ public class UserEditController {
 			@Override
 			public void handle(ActionEvent event) {
 				userModel.setLastModified(LocalDateTime.now());
+				System.out.println(userModel.getPassword());
+				System.out.println(userModel.getUser().getPassword());
 				userDao.save(userModel.getUser());
 				saveUserButton.getScene().getWindow().hide();
 			}
@@ -136,6 +166,11 @@ public class UserEditController {
 
 	@FXML
 	private TextField passwordTextField;
+	
+	@FXML
+	private TextField passwordAgainTextField;
+	
+	
 
 	@FXML
 	private TextField emailTextField;

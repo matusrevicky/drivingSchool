@@ -7,6 +7,16 @@ public class AvailableTime {
 	private LocalDateTime startTime;
 	private LocalDateTime endTime;
 	private Long myUserId;
+	private String eventString; 
+
+	
+	public String getEventString() {
+		return eventString;
+	}
+
+	public void setEventString(String eventString) {
+		this.eventString = eventString;
+	}
 
 	public Long getId() {
 		return id;

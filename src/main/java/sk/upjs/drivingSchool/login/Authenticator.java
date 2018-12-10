@@ -64,6 +64,10 @@ public enum Authenticator {
 
 		String hashedPassword = hashPassword(password);
 
+		// osetrenie null
+		if (phone == null) {
+			phone = "";
+		}
 		User createdUser = userDao.create(name, surname, phone, username, email, hashedPassword);
 		UserSession userSession = new UserSession(createdUser, createdUser.getId(), createdUser.getRole());
 		UserSessionManager.INSTANCE.setCurrentUserSession(userSession);

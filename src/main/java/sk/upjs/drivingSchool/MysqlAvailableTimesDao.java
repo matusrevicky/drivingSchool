@@ -19,7 +19,7 @@ public class MysqlAvailableTimesDao implements AvailableTimesDao {
 
 	@Override
 	public HashSet<AvailableTime> getAvailableTimesByUserId(long userId) {
-		String sql = "SELECT time.id, time.myUserId, time.startTime, time.endTime " +
+		String sql = "SELECT time.id, time.myUserId, time.startTime, time.endTime, time.eventString " +
 				"FROM availableTime AS time JOIN user ON user.id = time.myUserId " +
 				"WHERE user.id = " + userId; 
 		List<AvailableTime> availableTimesList = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(AvailableTime.class));
@@ -38,12 +38,13 @@ public class MysqlAvailableTimesDao implements AvailableTimesDao {
 		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
 		simpleJdbcInsert.withTableName("availableTime");
 		simpleJdbcInsert.usingGeneratedKeyColumns("id");
-		simpleJdbcInsert.usingColumns("startTime", "endTime", "myUserId");
+		simpleJdbcInsert.usingColumns("startTime", "endTime", "myUserId", "eventString");
 		
 		Map<String,Object> hodnoty = new HashMap<>();
 		hodnoty.put("startTime",availableTime.getStartTime());
 		hodnoty.put("endTime",availableTime.getEndTime());
 		hodnoty.put("myUserId",availableTime.getMyUserId());
+		hodnoty.put("eventString", availableTime.getEventString());
 		
 		Long id = simpleJdbcInsert.executeAndReturnKey(hodnoty).longValue();
 		availableTime.setId(id);

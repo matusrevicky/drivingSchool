@@ -101,6 +101,7 @@ public class UserController {
 
 	@FXML
 	void initialize() {
+		editButton.setDisable(true);
 		initializeUser();
 		currentUserName.setText("Uzivatel: " + loggedInUser.getUsername() + "; rola " + loggedInUser.getRole());
 

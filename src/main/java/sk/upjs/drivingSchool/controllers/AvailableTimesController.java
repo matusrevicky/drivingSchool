@@ -23,10 +23,10 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
-import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.icalendarfx.VCalendar;
+import jfxtras.icalendarfx.components.VEvent;
 import jfxtras.scene.control.agenda.Agenda;
+import jfxtras.scene.control.agenda.icalendar.ICalendarAgenda;
 import sk.upjs.drivingSchool.App;
 import sk.upjs.drivingSchool.AvailableTime;
 import sk.upjs.drivingSchool.AvailableTimesDao;
@@ -279,26 +279,10 @@ public class AvailableTimesController {
 		DateTimeFormatter formatter;
 		sb.append("BEGIN:VCALENDAR\r\n");
 		for (AvailableTime availableTime : availableTimesDao.getAvailableTimesByUserId(userModel.getUser().getId())) {//userModel.getAvailableTimes()
-			sb.append("BEGIN:VEVENT\r\n" + "SUMMARY:Voľný čas\r\n" + "CATEGORIES:group00\r\n"
-					+ "DTSTART;TZID=Europe/Prague:");
-
-			formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-			sb.append(availableTime.getStartTime().format(formatter));
-			sb.append("T");
-			formatter = DateTimeFormatter.ofPattern("HHmmss");
-			sb.append(availableTime.getStartTime().format(formatter));
+			
+			sb.append(availableTime.getEventString());
 			sb.append("\r\n");
-
-			sb.append("DTEND;TZID=Europe/Prague:");
-			formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-			sb.append(availableTime.getEndTime().format(formatter));
-			sb.append("T");
-			formatter = DateTimeFormatter.ofPattern("HHmmss");
-			sb.append(availableTime.getEndTime().format(formatter));
-			sb.append("\r\n");
-
-			sb.append("DESCRIPTION:\r\n" + "CREATED:20181201T093806Z\r\n" + "DTSTAMP:20181201T093806Z\r\n"
-					+ "UID:20181201T103807-0jfxtras.org\r\n" + "END:VEVENT\r\n");
+		
 		}
 		sb.append("END:VCALENDAR");
 		return sb.toString();
@@ -318,6 +302,8 @@ public class AvailableTimesController {
 			str = event.getDateTimeEnd().getValue().toString();
 			l = LocalDateTime.parse(str.subSequence(0, str.indexOf('+')));
 			newAvailableTime.setEndTime(l);
+			
+			newAvailableTime.setEventString(event.toString());
 
 			hashSetOfAvailableTimes.add(newAvailableTime);
 		}

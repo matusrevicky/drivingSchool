@@ -49,6 +49,7 @@ public class UserFxModel {
 		setActive(user.isActive());
 		setAvailableTimes(user.getAvailableTimes());
 		setReservations(user.getReservations());
+		setPassword(user.getPassword());
 	}
 	public User getUser() {
 		user.setFname(getFname());
@@ -64,6 +65,7 @@ public class UserFxModel {
 		user.setRidesDone(getRidesDone());
 		user.setAvailableTimes(getAvailableTimes());
 		user.setReservations(getReservations());
+		user.setPassword(getPassword());
 		return user;
 	}	
 	
