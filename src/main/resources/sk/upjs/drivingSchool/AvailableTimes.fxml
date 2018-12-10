@@ -6,6 +6,9 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -20,7 +23,15 @@
          <children>
             <HBox prefHeight="56.0" prefWidth="966.0">
                <children>
-                  <Label fx:id="currentUserName" alignment="TOP_LEFT" prefHeight="55.0" prefWidth="1064.0" text="User: Role:" textFill="WHITE">
+                  <ImageView fitHeight="55.0" fitWidth="70.0" preserveRatio="true">
+                     <image>
+                        <Image url="@pics/avatar-default-icon.png" />
+                     </image>
+                     <effect>
+                        <InnerShadow />
+                     </effect>
+                  </ImageView>
+                  <Label fx:id="currentUserName" prefHeight="55.0" prefWidth="1064.0" text="User: Role:" textFill="WHITE">
                      <font>
                         <Font size="29.0" />
                      </font>
@@ -38,35 +49,65 @@
                <children>
                   <Accordion />
                   <Accordion />
-                  <Button fx:id="homeButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="207.0" text="Home">
+                  <Button fx:id="homeButton" mnemonicParsing="false" prefHeight="70.0" prefWidth="207.0" text="Upcoming reservations">
                      <font>
                         <Font size="13.0" />
                      </font>
+                     <graphic>
+                        <ImageView fitHeight="39.0" preserveRatio="true">
+                           <image>
+                              <Image url="@pics/Actions-view-calendar-upcoming-events-icon.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
                   </Button>
-                  <Button fx:id="editMyProfileButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="207.0" text="Edit my profile">
+                  <Button fx:id="editMyProfileButton" mnemonicParsing="false" prefHeight="70.0" prefWidth="207.0" text="Edit my profile">
                      <font>
                         <Font size="13.0" />
                      </font>
+                     <graphic>
+                        <ImageView fitHeight="39.0" preserveRatio="true">
+                           <image>
+                              <Image url="@pics/edit-file-icon.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
                   </Button>
-                  <Button fx:id="changePasswordButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="217.0" text="Change password">
+                  <Button fx:id="avaibleTimesButton" mnemonicParsing="false" prefHeight="70.0" prefWidth="234.0" text="Available times">
                      <font>
                         <Font size="13.0" />
                      </font>
+                     <graphic>
+                        <ImageView fitHeight="39.0" preserveRatio="true">
+                           <image>
+                              <Image url="@pics/Calendar-icon.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
                   </Button>
-                  <Button fx:id="avaibleTimesButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="234.0" text="Avaible times">
+                  <Button fx:id="showUsersButton" mnemonicParsing="false" prefHeight="70.0" prefWidth="206.0" text="Show all users">
                      <font>
                         <Font size="13.0" />
                      </font>
+                     <graphic>
+                        <ImageView fitHeight="39.0" preserveRatio="true">
+                           <image>
+                              <Image url="@pics/User-Group-icon.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
                   </Button>
-                  <Button fx:id="showUsersButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="206.0" text="Show all users">
+                  <Button fx:id="signOutButton" mnemonicParsing="false" prefHeight="70.0" prefWidth="223.0" text="Sign out">
                      <font>
                         <Font size="13.0" />
                      </font>
-                  </Button>
-                  <Button fx:id="signOutButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="223.0" text="Sign out">
-                     <font>
-                        <Font size="13.0" />
-                     </font></Button>
+                     <graphic>
+                        <ImageView fitHeight="39.0" preserveRatio="true">
+                           <image>
+                              <Image url="@pics/Log-Out-icon.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
                </children>
             </VBox>
          </left>

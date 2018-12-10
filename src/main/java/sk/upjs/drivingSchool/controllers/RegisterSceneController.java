@@ -6,15 +6,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import sk.upjs.drivingSchool.App;
-import sk.upjs.drivingSchool.DaoFactory;
 import sk.upjs.drivingSchool.User;
-import sk.upjs.drivingSchool.UserDao;
 import sk.upjs.drivingSchool.UserFxModel;
 import sk.upjs.drivingSchool.login.Authenticator;
 import sk.upjs.drivingSchool.login.BadPasswordException;
@@ -23,13 +18,11 @@ import sk.upjs.drivingSchool.login.SomethingInUserIsNullExeption;
 import sk.upjs.drivingSchool.login.UserAlreadyExistsException;
 import sk.upjs.drivingSchool.login.UserSession;
 
-import java.util.Locale;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+@SuppressWarnings("restriction")
 public class RegisterSceneController {
 
+	
 	@FXML
 	private TextField emailTextField;
 
@@ -78,8 +71,6 @@ public class RegisterSceneController {
 	@FXML
 	private Button goToLoginButton;
 
-	private UserDao userDao = DaoFactory.INSTANCE.getUserDao();
-
 	private UserFxModel userModel = new UserFxModel(new User());
 
 	public static final String EMPTY = "Required";
@@ -91,16 +82,9 @@ public class RegisterSceneController {
 
 	@FXML
 	public void initialize() {
+		
+		bindUserModel();
 
-		fnameTextField.textProperty().bindBidirectional(userModel.fnameProperty());
-		lnameTextField.textProperty().bindBidirectional(userModel.lnameProperty());
-		phoneTextField.textProperty().bindBidirectional(userModel.phoneNumberProperty());
-		usernameTextField.textProperty().bindBidirectional(userModel.usernameProperty());
-		emailTextField.textProperty().bindBidirectional(userModel.emailProperty());
-		passwordTextField.textProperty().bindBidirectional(userModel.passwordProperty());
-		passwdAgainTextField.textProperty().bindBidirectional(userModel.passwordAgainProperty());
-
-		// userModel.setFname("janko");
 		fnameValidate();
 		lnameValidate();
 		usernameValidate();
@@ -117,6 +101,16 @@ public class RegisterSceneController {
 
 		registerButton();
 		switchToLoginButton();
+	}
+
+	private void bindUserModel() {
+		fnameTextField.textProperty().bindBidirectional(userModel.fnameProperty());
+		lnameTextField.textProperty().bindBidirectional(userModel.lnameProperty());
+		phoneTextField.textProperty().bindBidirectional(userModel.phoneNumberProperty());
+		usernameTextField.textProperty().bindBidirectional(userModel.usernameProperty());
+		emailTextField.textProperty().bindBidirectional(userModel.emailProperty());
+		passwordTextField.textProperty().bindBidirectional(userModel.passwordProperty());
+		passwdAgainTextField.textProperty().bindBidirectional(userModel.passwordAgainProperty());
 	}
 
 	private void switchToLoginButton() {
@@ -159,6 +153,7 @@ public class RegisterSceneController {
 		});
 	}
 
+	
 	public void changeColorRed(TextField textField) {
 		String cssLayout = "-fx-border-color: red;\n" + "-fx-border-radius: 4;\n" + "-fx-border-width: 2;\n";
 		textField.setStyle(cssLayout);
@@ -201,7 +196,6 @@ public class RegisterSceneController {
 					nameLabel.setText(EMPTY);
 					return;
 				}
-				// nameLabel.setTextFill(Color.web("#0076a3"));
 				changeColorGreen(fnameTextField);
 				nameLabel.setText(EVERYTHING_OK);
 			}

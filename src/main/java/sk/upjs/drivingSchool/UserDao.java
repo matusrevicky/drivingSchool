@@ -25,4 +25,6 @@ public interface UserDao {
 
 	User create(String name, String surname,String phone, String username, String email, String password);
 
+	List<User> search(String name);
+
 }

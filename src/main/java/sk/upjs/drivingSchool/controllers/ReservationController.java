@@ -26,6 +26,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
+import jfxtras.internal.scene.control.skin.agenda.base24hour.AgendaSkinTimeScale24HourAbstract;
 import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
 import jfxtras.labs.icalendarfx.VCalendar;
 import jfxtras.labs.icalendarfx.components.VEvent;
@@ -105,6 +107,7 @@ public class ReservationController {
 	@FXML
 	private Label instructorOnlyLabel;
 
+
 	@FXML
 	private Agenda calendarOriginal;
 	private BorderPane borderPane = null;
@@ -130,40 +133,51 @@ public class ReservationController {
 	private void initializeUser() {
 		long userId = UserSessionManager.INSTANCE.getCurrentUserSession().getUserId();
 		loggedInUser = userDao.get(userId);
+		currentUserName.setText(loggedInUser.getUsername() + " Role: " + loggedInUser.getRole());
 	}
 
 	@FXML
 	void initialize() {
-		{
-			initializeUser();
-			currentUserName.setText("Uzivatel: " + loggedInUser.getUsername() + "; rola " + loggedInUser.getRole());
-			checkSaveComponentsVisibility();
-			initializeLeftMenuComponents();
-			refreshComboBoxes();
-			if (loggedInUser.getRole().equals(Role.TEACHER.getName())) {
-				showAllStudents.setSelected(true);
-				showAllStudentsChecked = true;
-			} else if (loggedInUser.getRole().equals(Role.STUDENT.getName())) {
-				showAllInstructors.setSelected(true);
-				showAllInstructorsChecked = true;
-			} else {
-				showAllStudents.setSelected(true);
-				showAllStudentsChecked = true;
-				showAllInstructors.setSelected(true);
-				showAllInstructorsChecked = true;
-			}
-			initializeComponents();
-			refreshComboBoxes();
-			if (loggedInUser.getRole().equals(Role.TEACHER.getName())) {
-				instructorModel = new UserFxModel(loggedInUser);
-				instructorComboBox.getSelectionModel().select(loggedInUser);
-			} else if (loggedInUser.getRole().equals(Role.STUDENT.getName())) {
-				studentModel = new UserFxModel(loggedInUser);
-				studentComboBox.getSelectionModel().select(loggedInUser);
-			} else {
-				// showAllInstructors.setSelected(true);
-				// showAllStudentsChecked = true;
-			}
+		
+		
+		initializeUser();
+
+		checkSaveComponentsVisibility();
+		initializeLeftMenuComponents();
+		refreshComboBoxes();
+		if (loggedInUser.getRole().equals(Role.TEACHER.getName())) {
+			showAllStudents.setSelected(true);
+			showAllStudentsChecked = true;
+		} else if (loggedInUser.getRole().equals(Role.STUDENT.getName())) {
+			showAllInstructors.setSelected(true);
+			showAllInstructorsChecked = true;
+		} else {
+			showAllStudents.setSelected(true);
+			showAllStudentsChecked = true;
+			showAllInstructors.setSelected(true);
+			showAllInstructorsChecked = true;
+		}
+		initializeComponents();
+		refreshComboBoxes();
+		if (loggedInUser.getRole().equals(Role.TEACHER.getName())) {
+			instructorModel = new UserFxModel(loggedInUser);
+			instructorComboBox.getSelectionModel().select(loggedInUser);
+		} else if (loggedInUser.getRole().equals(Role.STUDENT.getName())) {
+			studentModel = new UserFxModel(loggedInUser);
+			studentComboBox.getSelectionModel().select(loggedInUser);
+		} else {
+			// showAllInstructors.setSelected(true);
+			// showAllStudentsChecked = true;
+		}
+		
+		
+	}
+
+	private void enableSaveButton() {
+		if (instructorComboBox.getSelectionModel().isEmpty() == false && studentForEventComboBox.getSelectionModel().isEmpty() == false) {
+			saveButton.setDisable(false);
+		} else {
+			saveButton.setDisable(true);
 		}
 	}
 
@@ -190,13 +204,7 @@ public class ReservationController {
 				refreshComboBoxes();
 			}
 		});
-		changePasswordButton.setOnAction(new EventHandler<ActionEvent>() {
 
-			@Override
-			public void handle(ActionEvent event) {
-				// TODO
-			}
-		});
 		avaibleTimesButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -242,6 +250,7 @@ public class ReservationController {
 		instructorComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<User>() {
 			@Override
 			public void changed(ObservableValue<? extends User> observable, User oldValue, User newValue) {
+				enableSaveButton();
 				if (newValue == null) {
 					instructorModel = null;
 				} else {
@@ -264,6 +273,7 @@ public class ReservationController {
 		studentForEventComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<User>() {
 			@Override
 			public void changed(ObservableValue<? extends User> observable, User oldValue, User newValue) {
+				enableSaveButton();
 				if (newValue == null) {
 					studentForALessonModel = null;
 				} else {
@@ -422,6 +432,7 @@ public class ReservationController {
 		// System.out.println(s);
 		// System.out.println("---------------");
 		myCalendar = VCalendar.parse(s);
+
 		calendarAgenda = new ICalendarAgenda(myCalendar);
 		borderPane.setCenter(calendarAgenda);
 		eventsBeforeChange.removeAll(eventsBeforeChange);

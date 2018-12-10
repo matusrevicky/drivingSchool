@@ -188,4 +188,10 @@ public class MemoryUserDao implements UserDao {
 		}
 		return list;
 	}
+
+	@Override
+	public List<User> search(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

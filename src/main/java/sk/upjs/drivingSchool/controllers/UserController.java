@@ -7,6 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.sun.xml.internal.bind.v2.TODO;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -22,6 +24,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
@@ -40,6 +43,7 @@ import sk.upjs.drivingSchool.DaoFactory;
 import sk.upjs.drivingSchool.Role;
 import sk.upjs.drivingSchool.User;
 import sk.upjs.drivingSchool.UserDao;
+import sk.upjs.drivingSchool.UserFxModel;
 import sk.upjs.drivingSchool.login.UserSessionManager;
 
 public class UserController {
@@ -78,18 +82,20 @@ public class UserController {
 
 	@FXML
 	private Button signOutButton;
-	
+
 	@FXML
-    private Button searchButton;
+	private Button searchButton;
 
 	@FXML
 	private Label currentUserName;
-	
+
 	@FXML
-    private Button createUserButton;
-	
+	private Button createUserButton;
+
 	@FXML
-    private Button deleteUserButton;
+	private Button deleteUserButton;
+
+	
 
 	private User loggedInUser;
 	private UserDao userDao = DaoFactory.INSTANCE.getUserDao();
@@ -97,14 +103,19 @@ public class UserController {
 	private void initializeUser() {
 		long userId = UserSessionManager.INSTANCE.getCurrentUserSession().getUserId();
 		loggedInUser = userDao.get(userId);
+		currentUserName.setText(loggedInUser.getUsername() + " Role: " + loggedInUser.getRole());
 	}
 
 	@FXML
 	void initialize() {
+		
+		
+		
+		
 		editButton.setDisable(true);
 		initializeUser();
-		currentUserName.setText("Uzivatel: " + loggedInUser.getUsername() + "; rola " + loggedInUser.getRole());
 
+		// zobrazi vsetkych
 		usersModel = FXCollections.observableArrayList(UserDao.getAll());
 
 		if (loggedInUser.getRole().equals(Role.STUDENT.getName())) {
@@ -116,7 +127,7 @@ public class UserController {
 
 			@Override
 			public void handle(ActionEvent event) {
-				//App.switchScene(new HomeSceneController(), "HomeScreen.fxml");
+				// App.switchScene(new HomeSceneController(), "HomeScreen.fxml");
 				App.switchScene(new ReservationController(), "ReservationScreen.fxml");
 			}
 		});
@@ -130,13 +141,7 @@ public class UserController {
 				usersModel.setAll(UserDao.getAll());
 			}
 		});
-		changePasswordButton.setOnAction(new EventHandler<ActionEvent>() {
 
-			@Override
-			public void handle(ActionEvent event) {
-				// TODO
-			}
-		});
 		avaibleTimesButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -159,6 +164,9 @@ public class UserController {
 			}
 		});
 
+		
+		
+		
 		editButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -169,44 +177,37 @@ public class UserController {
 				usersModel.setAll(UserDao.getAll());
 			}
 		});
-		
-		searchButton.setOnAction(new EventHandler<ActionEvent>() {
 
-			@Override
-			public void handle(ActionEvent event) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		
+	
+
 		createUserButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
-		
+
 		deleteUserButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
 
-		makeStringColumn(new TableColumn<>("ID"), "userId", "ID");
-		makeStringColumn(new TableColumn<>("Aktívny"), "active", "Aktívny");
-		makeStringColumn(new TableColumn<>("Rola"), "role", "Rola");
-		makeStringColumn(new TableColumn<>("Meno"), "fname", "Meno");
-		makeStringColumn(new TableColumn<>("Priezvisko"), "lname", "Priezvisko");
-		makeStringColumn(new TableColumn<>("Pocet jazd"), "ridesDone", "jazdy");
-		makeStringColumn(new TableColumn<>("Prihlasovacie meno"), "username", "Prihlas. meno");
+		makeStringColumn(new TableColumn<>("ID"), "Id", "ID");
+		makeStringColumn(new TableColumn<>("Active"), "active", "Aktívny");
+		makeStringColumn(new TableColumn<>("Role"), "role", "Rola");
+		makeStringColumn(new TableColumn<>("Name"), "fname", "Meno");
+		makeStringColumn(new TableColumn<>("Surname"), "lname", "Priezvisko");
+		makeStringColumn(new TableColumn<>("Rides done"), "ridesDone", "jazdy");
+		makeStringColumn(new TableColumn<>("Username"), "username", "Prihlas. meno");
 		makeStringColumn(new TableColumn<>("E-mail"), "email", "E-mail");
-		makeStringColumn(new TableColumn<>("Telefónne číslo"), "phoneNumber", "tel. číslo");
-		makeStringColumn(new TableColumn<>("Heslo"), "password", "Heslo");
+		makeStringColumn(new TableColumn<>("Phone number"), "phoneNumber", "tel. číslo");
+		makeStringColumn(new TableColumn<>("Password"), "password", "Heslo");
 
 		makeDateCreatedColumn();
 		makeLastModifiedColumn();
@@ -234,6 +235,26 @@ public class UserController {
 				selectedUser.set(newValue);
 			}
 		});
+		
+		//TODO este zrefaktoruj
+		searchButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				usersModel = FXCollections.observableArrayList(UserDao.search(nameTextField.getText()));
+				
+				userTableView.setItems(usersModel);
+				userTableView.setEditable(true);
+
+				ContextMenu contextMenu = new ContextMenu();
+				for (Entry<String, BooleanProperty> entry : columnsVisibility.entrySet()) {
+					CheckMenuItem menuItem = new CheckMenuItem(entry.getKey());
+					menuItem.selectedProperty().bindBidirectional(entry.getValue());
+					contextMenu.getItems().add(menuItem);
+				}
+				userTableView.setContextMenu(contextMenu);
+			}
+		});
 	}
 
 	void makeStringColumn(TableColumn<User, Long> column, String userPropertyName, String visibilityPropertyName) {
@@ -245,7 +266,7 @@ public class UserController {
 	}
 
 	private void makeDateCreatedColumn() {
-		TableColumn<User, LocalDateTime> dateCreatedCol = new TableColumn<>("Vytvorený");
+		TableColumn<User, LocalDateTime> dateCreatedCol = new TableColumn<>("Created");
 
 		dateCreatedCol.setCellFactory((TableColumn<User, LocalDateTime> param) -> {
 			return new TableCell<User, LocalDateTime>() {
@@ -266,11 +287,11 @@ public class UserController {
 			return new SimpleObjectProperty<>(param.getValue().getDateCreated());
 		});
 		userTableView.getColumns().add(dateCreatedCol);
-		columnsVisibility.put("Vytvorený", dateCreatedCol.visibleProperty());
+		columnsVisibility.put("Created", dateCreatedCol.visibleProperty());
 	}
 
 	private void makeLastModifiedColumn() {
-		TableColumn<User, LocalDateTime> lastModifiedCol = new TableColumn<>("Upravený");
+		TableColumn<User, LocalDateTime> lastModifiedCol = new TableColumn<>("Modified");
 
 		lastModifiedCol.setCellFactory((TableColumn<User, LocalDateTime> param) -> {
 			return new TableCell<User, LocalDateTime>() {
@@ -291,11 +312,11 @@ public class UserController {
 			return new SimpleObjectProperty<>(param.getValue().getLastModified());
 		});
 		userTableView.getColumns().add(lastModifiedCol);
-		columnsVisibility.put("Upravený", lastModifiedCol.visibleProperty());
+		columnsVisibility.put("Modified", lastModifiedCol.visibleProperty());
 	}
 
 	private void makeLastLoginColumn() {
-		TableColumn<User, LocalDateTime> lastLoginCol = new TableColumn<>("Posledné prihlásenie");
+		TableColumn<User, LocalDateTime> lastLoginCol = new TableColumn<>("Last login");
 
 		lastLoginCol.setCellFactory((TableColumn<User, LocalDateTime> param) -> {
 			return new TableCell<User, LocalDateTime>() {
@@ -316,7 +337,7 @@ public class UserController {
 			return new SimpleObjectProperty<>(param.getValue().getLastLogin());
 		});
 		userTableView.getColumns().add(lastLoginCol);
-		columnsVisibility.put("Posled. prihl.", lastLoginCol.visibleProperty());
+		columnsVisibility.put("Last login", lastLoginCol.visibleProperty());
 	}
 
 }

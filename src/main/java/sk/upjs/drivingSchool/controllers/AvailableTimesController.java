@@ -100,13 +100,13 @@ public class AvailableTimesController {
 	private void initializeUser() {
 		long userId = UserSessionManager.INSTANCE.getCurrentUserSession().getUserId();
 		loggedInUser = userDao.get(userId);
+		currentUserName.setText( loggedInUser.getUsername() + " Role: " + loggedInUser.getRole());
 	}
 
 	@FXML
 	void initialize() {
 
 		initializeUser();
-		currentUserName.setText("Uzivatel: " + loggedInUser.getUsername() + "; rola " + loggedInUser.getRole());
 		this.userModel = new UserFxModel(loggedInUser);
 		selectedRole = userModel.getRole();
 		selectedActive = userModel.getActive();
@@ -136,13 +136,8 @@ public class AvailableTimesController {
 				refreshNameComboBox();
 			}
 		});
-		changePasswordButton.setOnAction(new EventHandler<ActionEvent>() {
 
-			@Override
-			public void handle(ActionEvent event) {
-				// TODO
-			}
-		});
+		
 		avaibleTimesButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override

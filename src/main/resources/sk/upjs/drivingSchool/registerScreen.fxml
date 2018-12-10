@@ -25,18 +25,18 @@
               </columnConstraints>
               <rowConstraints>
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
@@ -106,11 +106,11 @@
                         <Insets left="15.0" />
                      </padding>
                   </Label>
-                  <TextField fx:id="fnameTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <TextField fx:id="lnameTextField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                  <TextField fx:id="phoneTextField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                  <TextField fx:id="usernameTextField" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                  <TextField fx:id="emailTextField" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                  <TextField fx:id="fnameTextField" minHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <TextField fx:id="lnameTextField" minHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <TextField fx:id="phoneTextField" minHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <TextField fx:id="usernameTextField" minHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                  <TextField fx:id="emailTextField" minHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                   <Label fx:id="usernameLabel" GridPane.columnIndex="2" GridPane.rowIndex="6">
                      <GridPane.margin>
                         <Insets left="5.0" />
@@ -142,8 +142,8 @@
                         <Insets left="5.0" />
                      </GridPane.margin>
                   </Label>
-                  <PasswordField fx:id="passwordTextField" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-                  <PasswordField fx:id="passwdAgainTextField" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                  <PasswordField fx:id="passwordTextField" minHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                  <PasswordField fx:id="passwdAgainTextField" minHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
                   <Label fx:id="phoneLabel" GridPane.columnIndex="2" GridPane.rowIndex="5">
                      <GridPane.margin>
                         <Insets left="5.0" />
@@ -167,12 +167,12 @@
                         <Insets top="20.0" />
                      </padding>
                   </Label>
-                  <Button fx:id="goToLoginButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="25.0" prefWidth="208.0" text="Already a member? login" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="12" />
-                  <Button fx:id="registerButton" contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" prefHeight="31.0" prefWidth="207.0" style="-fx-background-color: #3196DE; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);" text="Register" textFill="#f2f2f2" GridPane.columnIndex="1" GridPane.rowIndex="10" GridPane.rowSpan="2">
+                  <Button fx:id="registerButton" contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" prefHeight="31.0" prefWidth="207.0" style="-fx-background-insets: 0,1,2,3; -fx-background-radius: 3,2,2,2; -fx-background-color: linear-gradient(#3196DE, #263e75),   linear-gradient(#395cab, #3196DE);" text="Register" textFill="#f2f2f2" GridPane.columnIndex="1" GridPane.rowIndex="10" GridPane.rowSpan="2">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </Button>
+                  <Button fx:id="goToLoginButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="25.0" prefWidth="208.0" text="Already a member? login" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="12" />
                </children>
             </GridPane>
          </center>

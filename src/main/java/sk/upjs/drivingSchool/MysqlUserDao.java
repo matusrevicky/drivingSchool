@@ -140,6 +140,23 @@ public class MysqlUserDao implements UserDao {
 		}
 		return thisUser;
 	}
+	
+	public List<User> search(String name) {
+		String sql = "SELECT id, fname, lname, username, email, password, phoneNumber, dateCreated, "
+				+ "lastModified, lastLogin, active, ridesDone, role FROM User where fname LIKE '%"+name+"%'";
+		List<User> users = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
+		AvailableTimesDao availableTimeDao = DaoFactory.INSTANCE.getAvailableTimesDao();
+		ReservationDao reservationDao = DaoFactory.INSTANCE.getReservationDao();
+		for (User u : users) {
+			u.setAvailableTimes(availableTimeDao.getAvailableTimesByUserId(u.getId()));
+			if (u.getRole().equals(Role.TEACHER.toString())) {
+				u.setReservations(reservationDao.getReservationsByInstructorId(u.getId()));
+			} else if (u.getRole().equals(Role.TEACHER.toString())) {
+				u.setReservations(reservationDao.getReservationsByStudentId(u.getId()));
+			}
+		}
+		return users;
+	}
 
 	@Override
 	public User create(String name, String surname, String phone, String username, String email, String password) {

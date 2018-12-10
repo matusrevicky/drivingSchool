@@ -22,7 +22,9 @@ import sk.upjs.drivingSchool.login.UserDoesNotExistException;
 import sk.upjs.drivingSchool.login.UserNotActiveException;
 import sk.upjs.drivingSchool.login.UserSession;
 
+@SuppressWarnings("restriction")
 public class LoginSceenController {
+	
 	@FXML
 	private ResourceBundle resources;
 
