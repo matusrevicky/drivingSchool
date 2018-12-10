@@ -65,6 +65,6 @@
       <TextField fx:id="passwordTextField" layoutX="136.0" layoutY="351.0" />
       <Label layoutX="65.0" layoutY="355.0" text="Nove heslo:" />
       <Label layoutX="50.0" layoutY="389.0" text="Zopakuj heslo:" />
-      <TextField layoutX="136.0" layoutY="385.0" />
+      <TextField fx:id="passwordAgainTextField" layoutX="136.0" layoutY="385.0" />
    </children>
 </AnchorPane>
