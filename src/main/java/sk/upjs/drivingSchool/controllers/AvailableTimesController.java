@@ -1,5 +1,8 @@
 package sk.upjs.drivingSchool.controllers;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -8,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import javax.imageio.ImageIO;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -21,6 +26,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import jfxtras.icalendarfx.VCalendar;
@@ -39,6 +47,9 @@ import sk.upjs.drivingSchool.login.UserSessionManager;
 
 @SuppressWarnings("restriction")
 public class AvailableTimesController {
+
+	@FXML
+	private ImageView userImageView;
 
 	@FXML
 	private Label currentUserName;
@@ -100,7 +111,19 @@ public class AvailableTimesController {
 	private void initializeUser() {
 		long userId = UserSessionManager.INSTANCE.getCurrentUserSession().getUserId();
 		loggedInUser = userDao.get(userId);
-		currentUserName.setText( loggedInUser.getUsername() + " Role: " + loggedInUser.getRole());
+		if (loggedInUser.getRole().equals(Role.STUDENT.getName())) {
+			userImageView
+					.setImage(returnImage("src\\main\\resources\\sk\\upjs\\drivingSchool\\pics\\Student-3-icon.png"));
+		}
+		if (loggedInUser.getRole().equals(Role.TEACHER.getName())) {
+			userImageView.setImage(returnImage("src\\main\\resources\\sk\\upjs\\drivingSchool\\pics\\Boss-3-icon.png"));
+		}
+		if (loggedInUser.getRole().equals(Role.ADMIN.getName())) {
+			userImageView.setImage(
+					returnImage("src\\main\\resources\\sk\\upjs\\drivingSchool\\pics\\avatar-default-icon.png"));
+		}
+
+		currentUserName.setText(loggedInUser.getUsername() + " Role: " + loggedInUser.getRole());
 	}
 
 	@FXML
@@ -122,7 +145,7 @@ public class AvailableTimesController {
 
 			@Override
 			public void handle(ActionEvent event) {
-				//App.switchScene(new HomeSceneController(), "HomeScreen.fxml");
+				// App.switchScene(new HomeSceneController(), "HomeScreen.fxml");
 				App.switchScene(new ReservationController(), "ReservationScreen.fxml");
 			}
 		});
@@ -137,7 +160,6 @@ public class AvailableTimesController {
 			}
 		});
 
-		
 		avaibleTimesButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -185,7 +207,6 @@ public class AvailableTimesController {
 		});
 	}
 
-
 	private void initializeComponentsWithCurrectUserModel() {
 
 		List<String> roles = Role.STUDENT.getAllNames();
@@ -226,7 +247,7 @@ public class AvailableTimesController {
 				checkSaveButtonVisibility();
 			}
 		});
-		nameComboBox.getSelectionModel().select(userModel.getUser());		
+		nameComboBox.getSelectionModel().select(userModel.getUser());
 	}
 
 	private void refreshNameComboBox() {
@@ -273,11 +294,11 @@ public class AvailableTimesController {
 		StringBuilder sb = new StringBuilder();
 		DateTimeFormatter formatter;
 		sb.append("BEGIN:VCALENDAR\r\n");
-		for (AvailableTime availableTime : availableTimesDao.getAvailableTimesByUserId(userModel.getUser().getId())) {//userModel.getAvailableTimes()
-			
+		for (AvailableTime availableTime : availableTimesDao.getAvailableTimesByUserId(userModel.getUser().getId())) {// userModel.getAvailableTimes()
+
 			sb.append(availableTime.getEventString());
 			sb.append("\r\n");
-		
+
 		}
 		sb.append("END:VCALENDAR");
 		return sb.toString();
@@ -297,14 +318,36 @@ public class AvailableTimesController {
 			str = event.getDateTimeEnd().getValue().toString();
 			l = LocalDateTime.parse(str.subSequence(0, str.indexOf('+')));
 			newAvailableTime.setEndTime(l);
-			
+
 			newAvailableTime.setEventString(event.toString());
 
 			hashSetOfAvailableTimes.add(newAvailableTime);
 		}
-		
+
 		availableTimesDao.saveAvailableTimesWithUserId(hashSetOfAvailableTimes, loggedInUser.getId());
-		//userDao.get(loggedInUser.getUserId()).setAvailableTimes(hashSetOfAvailableTimes);
+		// userDao.get(loggedInUser.getUserId()).setAvailableTimes(hashSetOfAvailableTimes);
+	}
+
+	// skopirovana z
+	// https://blog.idrsolutions.com/2012/11/convert-bufferedimage-to-javafx-image/
+	private WritableImage returnImage(String path) {
+		BufferedImage bf = null;
+		try {
+			bf = ImageIO.read(new File(path));
+		} catch (IOException e) {
+			System.out.println("sda");
+		}
+		WritableImage wr = null;
+		if (bf != null) {
+			wr = new WritableImage(bf.getWidth(), bf.getHeight());
+			PixelWriter pw = wr.getPixelWriter();
+			for (int x = 0; x < bf.getWidth(); x++) {
+				for (int y = 0; y < bf.getHeight(); y++) {
+					pw.setArgb(x, y, bf.getRGB(x, y));
+				}
+			}
+		}
+		return wr;
 	}
 
 }

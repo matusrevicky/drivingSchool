@@ -1,5 +1,7 @@
 package sk.upjs.drivingSchool.controllers;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -7,7 +9,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.sun.xml.internal.bind.v2.TODO;
+import javax.imageio.ImageIO;
+
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
@@ -34,6 +37,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -54,13 +60,13 @@ public class UserController {
 	private ObjectProperty<User> selectedUser = new SimpleObjectProperty<>();
 
 	@FXML
+	private ImageView userImageView;
+
+	@FXML
 	private TableView<User> userTableView;
 
 	@FXML
 	private Button editButton;
-
-	@FXML
-	private TextField surnameTextField;
 
 	@FXML
 	private TextField nameTextField;
@@ -95,23 +101,30 @@ public class UserController {
 	@FXML
 	private Button deleteUserButton;
 
-	
-
 	private User loggedInUser;
 	private UserDao userDao = DaoFactory.INSTANCE.getUserDao();
 
 	private void initializeUser() {
 		long userId = UserSessionManager.INSTANCE.getCurrentUserSession().getUserId();
 		loggedInUser = userDao.get(userId);
+
+		if (loggedInUser.getRole().equals(Role.STUDENT.getName())) {
+			userImageView
+					.setImage(returnImage("src\\main\\resources\\sk\\upjs\\drivingSchool\\pics\\Student-3-icon.png"));
+		}
+		if (loggedInUser.getRole().equals(Role.TEACHER.getName())) {
+			userImageView.setImage(returnImage("src\\main\\resources\\sk\\upjs\\drivingSchool\\pics\\Boss-3-icon.png"));
+		}
+		if (loggedInUser.getRole().equals(Role.ADMIN.getName())) {
+			userImageView.setImage(
+					returnImage("src\\main\\resources\\sk\\upjs\\drivingSchool\\pics\\avatar-default-icon.png"));
+		}
 		currentUserName.setText(loggedInUser.getUsername() + " Role: " + loggedInUser.getRole());
 	}
 
 	@FXML
 	void initialize() {
-		
-		
-		
-		
+
 		editButton.setDisable(true);
 		initializeUser();
 
@@ -164,9 +177,6 @@ public class UserController {
 			}
 		});
 
-		
-		
-		
 		editButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -178,25 +188,17 @@ public class UserController {
 			}
 		});
 
-	
-
 		createUserButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-				// TODO Auto-generated method stub
-
+				App.showModalWindow(new CreateUserController(), "CreateNewUser.fxml");
+				// tento kod sa spusti az po zatvoreni okna
+				usersModel.setAll(UserDao.getAll());
 			}
 		});
 
-		deleteUserButton.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				// TODO Auto-generated method stub
-
-			}
-		});
+		
 
 		makeStringColumn(new TableColumn<>("ID"), "Id", "ID");
 		makeStringColumn(new TableColumn<>("Active"), "active", "Aktívny");
@@ -235,14 +237,25 @@ public class UserController {
 				selectedUser.set(newValue);
 			}
 		});
+
 		
-		//TODO este zrefaktoruj
+		deleteUserButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				userDao.delete(selectedUser.get().getId());
+				usersModel.setAll(UserDao.getAll());
+			}
+		});
+		
+		
+		// TODO este zrefaktoruj
 		searchButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
 				usersModel = FXCollections.observableArrayList(UserDao.search(nameTextField.getText()));
-				
+
 				userTableView.setItems(usersModel);
 				userTableView.setEditable(true);
 
@@ -338,6 +351,28 @@ public class UserController {
 		});
 		userTableView.getColumns().add(lastLoginCol);
 		columnsVisibility.put("Last login", lastLoginCol.visibleProperty());
+	}
+
+	// skopirovana z
+	// https://blog.idrsolutions.com/2012/11/convert-bufferedimage-to-javafx-image/
+	private WritableImage returnImage(String path) {
+		BufferedImage bf = null;
+		try {
+			bf = ImageIO.read(new File(path));
+		} catch (IOException e) {
+			System.out.println("sda");
+		}
+		WritableImage wr = null;
+		if (bf != null) {
+			wr = new WritableImage(bf.getWidth(), bf.getHeight());
+			PixelWriter pw = wr.getPixelWriter();
+			for (int x = 0; x < bf.getWidth(); x++) {
+				for (int y = 0; y < bf.getHeight(); y++) {
+					pw.setArgb(x, y, bf.getRGB(x, y));
+				}
+			}
+		}
+		return wr;
 	}
 
 }

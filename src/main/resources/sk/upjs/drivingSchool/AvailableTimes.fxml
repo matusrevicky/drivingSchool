@@ -23,13 +23,13 @@
          <children>
             <HBox prefHeight="56.0" prefWidth="966.0">
                <children>
-                  <ImageView fitHeight="55.0" fitWidth="70.0" preserveRatio="true">
-                     <image>
-                        <Image url="@pics/avatar-default-icon.png" />
-                     </image>
+                  <ImageView fx:id="userImageView" fitHeight="50.0" fitWidth="55.0" preserveRatio="true">
                      <effect>
                         <InnerShadow />
                      </effect>
+                     <HBox.margin>
+                        <Insets left="5.0" top="2.5" />
+                     </HBox.margin>
                   </ImageView>
                   <Label fx:id="currentUserName" prefHeight="55.0" prefWidth="1064.0" text="User: Role:" textFill="WHITE">
                      <font>
@@ -116,24 +116,29 @@
                <center>
                   <BorderPane>
                      <top>
-                        <Pane maxHeight="99.0" prefWidth="760.0" BorderPane.alignment="CENTER">
+                        <Pane maxHeight="117.0" prefHeight="117.0" prefWidth="760.0" BorderPane.alignment="CENTER">
                            <children>
-                              <Button fx:id="weekLeftButton" layoutX="66.0" layoutY="40.0" mnemonicParsing="false" text="&lt;" />
-                              <Button fx:id="weekRightButton" layoutX="90.0" layoutY="40.0" mnemonicParsing="false" text="&gt;" />
-                              <Label layoutX="27.0" layoutY="41.0" text="Week" />
-                              <Button fx:id="saveButton" defaultButton="true" layoutX="664.0" layoutY="40.0" mnemonicParsing="false" text="Save" />
-                              <CheckBox fx:id="activeCheckBox" layoutX="217.0" layoutY="65.0" mnemonicParsing="false" selected="true" text="Active" />
-                              <Label layoutX="208.0" layoutY="14.0" text="Person" />
-                              <ComboBox fx:id="roleComboBox" layoutX="201.0" layoutY="37.0" prefHeight="25.0" prefWidth="100.0" />
-                              <ComboBox fx:id="nameComboBox" layoutX="305.0" layoutY="37.0" prefHeight="25.0" prefWidth="210.0" />
+                              <Button fx:id="weekLeftButton" layoutX="65.0" layoutY="61.0" mnemonicParsing="false" text="&lt;" />
+                              <Button fx:id="weekRightButton" layoutX="89.0" layoutY="61.0" mnemonicParsing="false" text="&gt;" />
+                              <Label layoutX="26.0" layoutY="62.0" text="Week" />
+                              <Button fx:id="saveButton" defaultButton="true" layoutX="663.0" layoutY="61.0" mnemonicParsing="false" text="Save" />
+                              <CheckBox fx:id="activeCheckBox" layoutX="216.0" layoutY="86.0" mnemonicParsing="false" selected="true" text="Active" />
+                              <Label layoutX="207.0" layoutY="35.0" text="Person" />
+                              <ComboBox fx:id="roleComboBox" layoutX="200.0" layoutY="58.0" prefHeight="25.0" prefWidth="100.0" />
+                              <ComboBox fx:id="nameComboBox" layoutX="304.0" layoutY="58.0" prefHeight="25.0" prefWidth="210.0" />
+                              <Label layoutX="19.0" layoutY="14.0" text="Available Times">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </Pane>
                      </top>
                      <center>
                         <BorderPane prefHeight="494.0" prefWidth="760.0" BorderPane.alignment="CENTER">
-                           <center>
+                           <right>
                               <Agenda fx:id="calendarOriginal" prefHeight="489.0" prefWidth="760.0" BorderPane.alignment="CENTER" />
-                           </center>
+                           </right>
                         </BorderPane>
                      </center>
                   </BorderPane>

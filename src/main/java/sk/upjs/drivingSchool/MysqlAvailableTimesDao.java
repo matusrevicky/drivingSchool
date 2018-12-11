@@ -18,6 +18,13 @@ public class MysqlAvailableTimesDao implements AvailableTimesDao {
 	}
 
 	@Override
+	public HashSet<AvailableTime> getAllCalendarEvents() {
+		String sql = "SELECT availabletime.eventString FROM AvailableTime ";
+		List<AvailableTime> reservationsList = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(AvailableTime.class));
+		return new HashSet<AvailableTime>(reservationsList);
+	}
+	
+	@Override
 	public HashSet<AvailableTime> getAvailableTimesByUserId(long userId) {
 		String sql = "SELECT time.id, time.myUserId, time.startTime, time.endTime, time.eventString " +
 				"FROM availableTime AS time JOIN user ON user.id = time.myUserId " +

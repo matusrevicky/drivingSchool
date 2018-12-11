@@ -10,4 +10,6 @@ public interface AvailableTimesDao {
 	HashSet<AvailableTime> getAvailableTimesByUserId(long userId);
 
 	void saveAvailableTimesWithUserId(HashSet<AvailableTime> availableTimes, long userId);
+
+	HashSet<AvailableTime> getAllCalendarEvents();
 }

@@ -19,7 +19,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/T440p/Downloads/jar_subory/jfxtras-labs-samples-8.0-r6-SNAPSHOT-all.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_191">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>

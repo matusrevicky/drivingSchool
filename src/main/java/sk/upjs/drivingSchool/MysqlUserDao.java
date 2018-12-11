@@ -70,7 +70,7 @@ public class MysqlUserDao implements UserDao {
 		if (u.getId() == null) {
 			add(u);
 		} else {
-			if (u.getPassword() == null || u.getPassword().isEmpty()) {
+			if ((u.getPassword() == null || u.getPassword().isEmpty())) {
 				String sql = "UPDATE User SET fname = ?, lname = ?, username = ?, email = ?,"
 						+ " phoneNumber = ?, dateCreated = ?, lastModified = ?,"
 						+ " lastLogin = ?, active = ?, ridesDone = ?, role = ?" + "WHERE id = ?";

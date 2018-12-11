@@ -51,7 +51,7 @@ public class UserEditController {
 		long userId = UserSessionManager.INSTANCE.getCurrentUserSession().getUserId();
 		loggedInUser = userDao.get(userId);
 		
-		loggedInUser.setLastLogin(LocalDateTime.now());
+		
 		//userDao.save(loggedInUser);
 	}
 	
@@ -89,7 +89,33 @@ public class UserEditController {
     	userModel.passwordAgainProperty().bind(passwordAgainTextField.textProperty());
     	userModel.passwordProperty().bind(passwordTextField.textProperty());
     //	passwordTextField.textProperty().bind(userModel.passwordProperty());
-    
+    	
+    	passwordTextField.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (!userModel.getPassword().equals(userModel.getPasswordAgain())) {
+					saveUserButton.setDisable(true);
+				}else {
+					saveUserButton.setDisable(false);
+				}	
+			}
+		});
+    	
+    	passwordAgainTextField.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (!userModel.getPassword().equals(userModel.getPasswordAgain())) {
+					saveUserButton.setDisable(true);
+				}else {
+					saveUserButton.setDisable(false);
+				}	
+			}
+		});
+    	
+    	
+    	
     	
 		fnameTextField.textProperty().bindBidirectional(userModel.fnameProperty());
 		lnameTextField.textProperty().bindBidirectional(userModel.lnameProperty());
@@ -111,8 +137,8 @@ public class UserEditController {
 			@Override
 			public void handle(ActionEvent event) {
 				userModel.setLastModified(LocalDateTime.now());
-				System.out.println(userModel.getPassword());
-				System.out.println(userModel.getUser().getPassword());
+//				System.out.println(userModel.getPassword());
+//				System.out.println(userModel.getUser().getPassword());
 				userDao.save(userModel.getUser());
 				saveUserButton.getScene().getWindow().hide();
 			}
@@ -133,6 +159,8 @@ public class UserEditController {
 			}
 		});
 	}
+	
+	
 
 	@FXML
 	private ResourceBundle resources;

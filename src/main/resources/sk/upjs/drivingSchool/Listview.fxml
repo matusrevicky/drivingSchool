@@ -24,13 +24,13 @@
          <children>
             <HBox prefHeight="56.0" prefWidth="966.0">
                <children>
-                  <ImageView fitHeight="56.0" fitWidth="57.0" preserveRatio="true">
-                     <image>
-                        <Image url="@pics/avatar-default-icon.png" />
-                     </image>
+                  <ImageView fx:id="userImageView" fitHeight="50.0" fitWidth="55.0" preserveRatio="true">
                      <effect>
                         <InnerShadow />
                      </effect>
+                     <HBox.margin>
+                        <Insets left="5.0" top="2.5" />
+                     </HBox.margin>
                   </ImageView>
                   <Label fx:id="currentUserName" prefHeight="55.0" prefWidth="1064.0" text="User: Role:" textFill="WHITE">
                      <font>
@@ -120,9 +120,9 @@
                         <GridPane>
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="637.0" minWidth="10.0" prefWidth="165.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="450.0" minWidth="10.0" prefWidth="68.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="295.0" minWidth="10.0" prefWidth="127.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="400.0" minWidth="10.0" prefWidth="400.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="450.0" minWidth="10.0" prefWidth="62.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="295.0" minWidth="10.0" prefWidth="145.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="400.0" minWidth="10.0" prefWidth="388.0" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints maxHeight="50.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -141,29 +141,54 @@
                                     <Font size="22.0" />
                                  </font>
                               </Label>
-                              <Button fx:id="editButton" mnemonicParsing="false" text="Edit user" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                              <Button fx:id="editButton" mnemonicParsing="false" text="Edit selected user" GridPane.columnIndex="3" GridPane.rowIndex="2">
                                  <GridPane.margin>
                                     <Insets left="5.0" />
                                  </GridPane.margin>
+                                 <graphic>
+                                    <ImageView fitHeight="16.0" fitWidth="29.0" preserveRatio="true">
+                                       <image>
+                                          <Image url="@pics/edit-file-icon.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
                               </Button>
-                              <Button fx:id="createUserButton" mnemonicParsing="false" text="Create user TODO?" GridPane.rowIndex="1">
+                              <Button fx:id="createUserButton" mnemonicParsing="false" text="Create user" GridPane.rowIndex="1">
                                  <GridPane.margin>
                                     <Insets left="10.0" />
                                  </GridPane.margin>
+                                 <graphic>
+                                    <ImageView>
+                                       <image>
+                                          <Image url="@pics/Files-New-File-icon.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
                               </Button>
-                              <TextField fx:id="surnameTextField" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                              <Label text="Meno" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField fx:id="nameTextField" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                              <Label text="Priezvisko" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <Button fx:id="deleteUserButton" mnemonicParsing="false" text="Delete user TODO" GridPane.rowIndex="2">
+                              <TextField fx:id="nameTextField" promptText="Name" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                              <Button fx:id="deleteUserButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="144.0" text="Delete selected user" GridPane.columnIndex="2" GridPane.rowIndex="2">
                                  <GridPane.margin>
-                                    <Insets left="10.0" />
+                                    <Insets />
                                  </GridPane.margin>
+                                 <graphic>
+                                    <ImageView>
+                                       <image>
+                                          <Image url="@pics/Button-Close-icon.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
                               </Button>
-                              <Button fx:id="searchButton" mnemonicParsing="false" text="Search" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                              <Button fx:id="searchButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="129.0" text="Search" GridPane.columnIndex="3" GridPane.rowIndex="1">
                                  <GridPane.margin>
                                     <Insets left="5.0" />
                                  </GridPane.margin>
+                                 <graphic>
+                                    <ImageView preserveRatio="true">
+                                       <image>
+                                          <Image url="@pics/search-icon.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
                               </Button>
                            </children>
                         </GridPane>

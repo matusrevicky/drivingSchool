@@ -1,5 +1,8 @@
 package sk.upjs.drivingSchool.controllers;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 
 import java.time.LocalDateTime;
@@ -11,27 +14,39 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javax.imageio.ImageIO;
+
+import com.sun.corba.se.impl.protocol.ServantCacheLocalCRDBase;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.collections.ListChangeListener.Change;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView.EditEvent;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.MouseDragEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
-import jfxtras.internal.scene.control.skin.agenda.base24hour.AgendaSkinTimeScale24HourAbstract;
-import jfxtras.labs.icalendaragenda.scene.control.agenda.ICalendarAgenda;
-import jfxtras.labs.icalendarfx.VCalendar;
-import jfxtras.labs.icalendarfx.components.VEvent;
+import jfxtras.icalendarfx.VCalendar;
+import jfxtras.icalendarfx.components.VEvent;
 import jfxtras.scene.control.agenda.Agenda;
+import jfxtras.scene.control.agenda.icalendar.ICalendarAgenda;
 import sk.upjs.drivingSchool.App;
 import sk.upjs.drivingSchool.AvailableTime;
 import sk.upjs.drivingSchool.AvailableTimesDao;
@@ -107,6 +122,11 @@ public class ReservationController {
 	@FXML
 	private Label instructorOnlyLabel;
 
+	@FXML
+	private ImageView userImageView;
+	
+	@FXML
+    private CheckBox showAllStudentsAvailableTime;
 
 	@FXML
 	private Agenda calendarOriginal;
@@ -123,28 +143,47 @@ public class ReservationController {
 	private UserFxModel studentModel;
 	private UserFxModel studentForALessonModel;
 
+	private boolean showAllStudentsAvailableTimeChecked = false;
 	private boolean showAllStudentsChecked = false;
 	private boolean showAllInstructorsChecked = false;
-	private boolean showAllStudentsChanged = false;
-	private boolean showAllInstructorsChanged = false;
+	
+	//musia byt true
+	private boolean showAllStudentsChanged = true;
+	private boolean showAllInstructorsChanged = true;
 	private String searchInstructorString = "";
 	private String searchStudentString = "";
 
+	
+	
+	
 	private void initializeUser() {
 		long userId = UserSessionManager.INSTANCE.getCurrentUserSession().getUserId();
 		loggedInUser = userDao.get(userId);
+		loggedInUser.setLastLogin(LocalDateTime.now());
+
+		if (loggedInUser.getRole().equals(Role.STUDENT.getName())) {
+			userImageView
+					.setImage(returnImage("src\\main\\resources\\sk\\upjs\\drivingSchool\\pics\\Student-3-icon.png"));
+		}
+		if (loggedInUser.getRole().equals(Role.TEACHER.getName())) {
+			userImageView.setImage(returnImage("src\\main\\resources\\sk\\upjs\\drivingSchool\\pics\\Boss-3-icon.png"));
+		}
+		if (loggedInUser.getRole().equals(Role.ADMIN.getName())) {
+			userImageView.setImage(returnImage("src\\main\\resources\\sk\\upjs\\drivingSchool\\pics\\avatar-default-icon.png"));
+		}
+
 		currentUserName.setText(loggedInUser.getUsername() + " Role: " + loggedInUser.getRole());
 	}
 
 	@FXML
 	void initialize() {
-		
-		
+
 		initializeUser();
 
 		checkSaveComponentsVisibility();
 		initializeLeftMenuComponents();
 		refreshComboBoxes();
+
 		if (loggedInUser.getRole().equals(Role.TEACHER.getName())) {
 			showAllStudents.setSelected(true);
 			showAllStudentsChecked = true;
@@ -169,15 +208,21 @@ public class ReservationController {
 			// showAllInstructors.setSelected(true);
 			// showAllStudentsChecked = true;
 		}
-		
-		
+
+		// ak je agenda disable neda sa scrollovat
+		if (loggedInUser.getRole().equals(Role.STUDENT.getName())) {
+			calendarAgenda.setAllowDragging(false);
+			calendarAgenda.setAllowResize(false);
+			calendarAgenda.setActionCallback(null);
+		}
+
 	}
 
 	private void enableSaveButton() {
-		if (instructorComboBox.getSelectionModel().isEmpty() == false && studentForEventComboBox.getSelectionModel().isEmpty() == false) {
-			saveButton.setDisable(false);
-		} else {
+		if (instructorComboBox.getSelectionModel().isEmpty() || studentForEventComboBox.getSelectionModel().isEmpty()) {
 			saveButton.setDisable(true);
+		} else {
+			saveButton.setDisable(false);
 		}
 	}
 
@@ -229,13 +274,90 @@ public class ReservationController {
 	}
 
 	private void initializeComponents() {
+		
+		showAllStudentsAvailableTime.selectedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				showAllStudentsAvailableTimeChecked = newValue;
+				
+				if (showAllStudentsAvailableTimeChecked) {
+					if (borderPane == null)
+						borderPane = (BorderPane) calendarOriginal.getParent();
+					if (borderPane.getChildren() == null || borderPane.getChildren().size() == 0) {
 
+					} else if (borderPane.getChildren().size() == 1) {
+						borderPane.getChildren().remove(0);
+					} else {
+						System.out.println("Viac kalendarov naraz exception!");
+					}
+					
+					
+					StringBuilder sb = new StringBuilder();
+					DateTimeFormatter formatter;
+					sb.append("BEGIN:VCALENDAR\r\n");
+					HashSet<AvailableTime> reservationSet = new HashSet<AvailableTime>();
+					
+						reservationSet = availableTimesDao.getAllCalendarEvents();
+						for (AvailableTime reservation : reservationSet) {
+							sb.append(reservation.getEventString());
+							sb.append("\r\n");
+						}
+					
+						
+					if (instructorModel != null) {
+						instructorModel.setAvailableTimes(reservationSet);
+					}
+					
+					sb.append("END:VCALENDAR");
+					String s = sb.toString();
+					s.replaceAll("//", "/");
+					
+					
+					// String s = reservationsToString();
+					// System.out.println("---------------");
+					// System.out.println(s);
+					// System.out.println("---------------");
+					myCalendar = VCalendar.parse(s);
+
+					calendarAgenda = new ICalendarAgenda(myCalendar);
+					borderPane.setCenter(calendarAgenda);
+					eventsBeforeChange.removeAll(eventsBeforeChange);
+					if (myCalendar.getVEvents() != null) {
+						eventsBeforeChange.addAll(myCalendar.getVEvents());
+					}
+				}else {
+					StringBuilder sb = new StringBuilder();
+					DateTimeFormatter formatter;
+					sb.append("BEGIN:VCALENDAR\r\n");
+					
+					sb.append("END:VCALENDAR");
+					String s = sb.toString();
+					s.replaceAll("//", "/");
+					
+					
+					// String s = reservationsToString();
+					// System.out.println("---------------");
+					// System.out.println(s);
+					// System.out.println("---------------");
+					myCalendar = VCalendar.parse(s);
+
+					calendarAgenda = new ICalendarAgenda(myCalendar);
+					borderPane.setCenter(calendarAgenda);
+					eventsBeforeChange.removeAll(eventsBeforeChange);
+					if (myCalendar.getVEvents() != null) {
+						eventsBeforeChange.addAll(myCalendar.getVEvents());
+					}
+				}
+				
+			}
+		});
 		showAllInstructors.selectedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				showAllInstructorsChecked = newValue;
 				showAllInstructorsChanged = true;
 				refreshComboBoxes();
+				
 			}
 		});
 		showAllStudents.selectedProperty().addListener(new ChangeListener<Boolean>() {
@@ -244,6 +366,7 @@ public class ReservationController {
 				showAllStudentsChecked = newValue;
 				showAllStudentsChanged = true;
 				refreshComboBoxes();
+				
 			}
 		});
 
@@ -309,6 +432,38 @@ public class ReservationController {
 		saveButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
+
+				for (VEvent calendarEvent : myCalendar.getVEvents()) {
+					boolean jeNovy = true;
+					for (Reservation modelReservation : instructorModel.getReservations()) {
+						VEvent modelEvent = VEvent.parse(modelReservation.getEventString());
+						String s = calendarEvent.getUniqueIdentifier().getValue();
+						String s2 = modelEvent.getUniqueIdentifier().getValue();
+
+						if (s.equals(s2)) {
+							jeNovy = false;
+							// break;
+						}
+					}
+					if (jeNovy) {
+						// System.out.println("novy event id: " + e.getUniqueIdentifier().getValue());
+						// System.out.println("novy event string: " + e.toContent());
+						HashSet<Reservation> reservations = instructorModel.getReservations();
+						Reservation r = new Reservation();
+						calendarEvent.setSummary(instructorModel.getUser().toString() + " \n"
+								+ studentForALessonModel.getUser().toString());
+						r.setEventString(calendarEvent.toString());
+						r.setInstructorId(instructorModel.getUser().getId());
+						r.setStudentId(studentForALessonModel.getUser().getId());
+						r.setSeenByStudent(false);
+						reservations.add(r);
+						instructorModel.setReservations(reservations);
+						// break;
+					}
+				}
+				eventsBeforeChange.removeAll(eventsBeforeChange);
+				eventsBeforeChange.addAll(myCalendar.getVEvents());
+
 				HashSet<Reservation> newReservationSet = new HashSet<Reservation>();
 				for (VEvent calendarEvent : myCalendar.getVEvents()) {// Reservation r :
 																		// instructorModel.getReservations()
@@ -319,7 +474,7 @@ public class ReservationController {
 						VEvent modelEvent = VEvent.parse(modelReservation.getEventString());
 						if (calendarEvent.getUniqueIdentifier().getValue()
 								.equals(modelEvent.getUniqueIdentifier().getValue())) {
-							modelReservation.setEventString(calendarEvent.toContent());
+							modelReservation.setEventString(calendarEvent.toString());
 							newReservationSet.add(modelReservation);
 							break;
 						}
@@ -352,6 +507,7 @@ public class ReservationController {
 	}
 
 	private void refreshComboBoxes() {
+		
 
 		if (showAllStudentsChanged) {
 			if (showAllStudentsChecked) {
@@ -377,7 +533,13 @@ public class ReservationController {
 				instructorComboBox.setDisable(true);
 			} else {
 				instructorComboBox.setDisable(false);
-				List<User> instructors = userDao.getAll(Role.TEACHER.getName(), true);
+				List<User> instructors = null;
+				if (loggedInUser.getRole().equals(Role.TEACHER.getName())) {
+					instructors = new ArrayList<>();
+					instructors.add(userDao.get(loggedInUser.getId()));
+				} else {
+					instructors = userDao.getAll(Role.TEACHER.getName(), true);
+				}
 				instructorComboBox.setItems(FXCollections.observableList(instructors));
 				if (!instructors.isEmpty()) {
 					if (searchInstructorString == null || searchInstructorString.isEmpty()) {
@@ -436,44 +598,88 @@ public class ReservationController {
 		calendarAgenda = new ICalendarAgenda(myCalendar);
 		borderPane.setCenter(calendarAgenda);
 		eventsBeforeChange.removeAll(eventsBeforeChange);
-		eventsBeforeChange.addAll(myCalendar.getVEvents());
+		if (myCalendar.getVEvents() != null) {
+			eventsBeforeChange.addAll(myCalendar.getVEvents());
+		}
 
-		// v novom kalendari musi byt novy listener
-		Collection<VEvent> vevents = myCalendar.getVEvents();
-		myCalendar.getVEvents().addListener(new ListChangeListener<VEvent>() {
-			@Override
-			public void onChanged(Change<? extends VEvent> c) {
-				for (VEvent calendarEvent : myCalendar.getVEvents()) {
-					boolean jeNovy = true;
-					for (Reservation modelReservation : instructorModel.getReservations()) {
-						VEvent modelEvent = VEvent.parse(modelReservation.getEventString());
-						String s = calendarEvent.getUniqueIdentifier().getValue();
-						String s2 = modelEvent.getUniqueIdentifier().getValue();
-						if (s.equals(s2)) {
-							jeNovy = false;
-							break;
-						}
-					}
-					if (jeNovy) {
-						// System.out.println("novy event id: " + e.getUniqueIdentifier().getValue());
-						// System.out.println("novy event string: " + e.toContent());
-						HashSet<Reservation> reservations = instructorModel.getReservations();
-						Reservation r = new Reservation();
-						calendarEvent.setSummary(instructorModel.getUser().toString() + " \n"
-								+ studentForALessonModel.getUser().toString());
-						r.setEventString(calendarEvent.toContent());
-						r.setInstructorId(instructorModel.getUser().getId());
-						r.setStudentId(studentForALessonModel.getUser().getId());
-						r.setSeenByStudent(false);
-						reservations.add(r);
-						instructorModel.setReservations(reservations);
-						break;
-					}
-				}
-				eventsBeforeChange.removeAll(eventsBeforeChange);
-				eventsBeforeChange.addAll(myCalendar.getVEvents());
-			}
-		});
+		// FXCollections.observableList(vevents);
+
+//		borderPane.setOnMouseEntered(new EventHandler<MouseEvent>() {
+//		    public void handle(MouseEvent me) {
+//		    	System.out.println("zmena");
+//				for (VEvent calendarEvent : myCalendar.getVEvents()) {
+//					boolean jeNovy = true;
+//					for (Reservation modelReservation : instructorModel.getReservations()) {
+//						VEvent modelEvent = VEvent.parse(modelReservation.getEventString());
+//						String s = calendarEvent.getUniqueIdentifier().getValue();
+//						String s2 = modelEvent.getUniqueIdentifier().getValue();
+//						if (s.equals(s2)) {
+//							jeNovy = false;
+//							break;
+//						}
+//					}
+//					if (jeNovy) {
+//						// System.out.println("novy event id: " + e.getUniqueIdentifier().getValue());
+//						// System.out.println("novy event string: " + e.toContent());
+//						HashSet<Reservation> reservations = instructorModel.getReservations();
+//						Reservation r = new Reservation();
+//						calendarEvent.setSummary(instructorModel.getUser().toString() + " \n"
+//								+ studentForALessonModel.getUser().toString());
+//						r.setEventString(calendarEvent.toString());
+//						r.setInstructorId(instructorModel.getUser().getId());
+//						r.setStudentId(studentForALessonModel.getUser().getId());
+//						r.setSeenByStudent(false);
+//						reservations.add(r);
+//						instructorModel.setReservations(reservations);
+//						break;
+//					}
+//				}
+//				eventsBeforeChange.removeAll(eventsBeforeChange);
+//				eventsBeforeChange.addAll(myCalendar.getVEvents());
+//			}
+//		    
+//		});
+//		
+
+//		if (myCalendar.getVEvents()!=null) {
+//			System.out.println("som listner");
+//			FXCollections.observableList(myCalendar.getVEvents()).addListener(new ListChangeListener<VEvent>() {
+//
+//				@Override
+//				public void onChanged(Change<? extends VEvent> c) {
+//					System.out.println("zmena");
+//					for (VEvent calendarEvent : myCalendar.getVEvents()) {
+//						boolean jeNovy = true;
+//						for (Reservation modelReservation : instructorModel.getReservations()) {
+//							VEvent modelEvent = VEvent.parse(modelReservation.getEventString());
+//							String s = calendarEvent.getUniqueIdentifier().getValue();
+//							String s2 = modelEvent.getUniqueIdentifier().getValue();
+//							if (s.equals(s2)) {
+//								jeNovy = false;
+//								break;
+//							}
+//						}
+//						if (jeNovy) {
+//							// System.out.println("novy event id: " + e.getUniqueIdentifier().getValue());
+//							// System.out.println("novy event string: " + e.toContent());
+//							HashSet<Reservation> reservations = instructorModel.getReservations();
+//							Reservation r = new Reservation();
+//							calendarEvent.setSummary(instructorModel.getUser().toString() + " \n"
+//									+ studentForALessonModel.getUser().toString());
+//							r.setEventString(calendarEvent.toString());
+//							r.setInstructorId(instructorModel.getUser().getId());
+//							r.setStudentId(studentForALessonModel.getUser().getId());
+//							r.setSeenByStudent(false);
+//							reservations.add(r);
+//							instructorModel.setReservations(reservations);
+//							break;
+//						}
+//					}
+//					eventsBeforeChange.removeAll(eventsBeforeChange);
+//					eventsBeforeChange.addAll(myCalendar.getVEvents());
+//				}
+//			});
+//		}
 	}
 
 	private String reservationsToString() {
@@ -524,6 +730,28 @@ public class ReservationController {
 
 	private void saveReservations() {
 		reservationDao.saveReservations(instructorModel.getReservations(), instructorModel.getUser().getId());
+	}
+
+	// skopirovana z
+	// https://blog.idrsolutions.com/2012/11/convert-bufferedimage-to-javafx-image/
+	private WritableImage returnImage(String path) {
+		BufferedImage bf = null;
+		try {
+			bf = ImageIO.read(new File(path));
+		} catch (IOException e) {
+			System.out.println("sda");
+		}
+		WritableImage wr = null;
+		if (bf != null) {
+			wr = new WritableImage(bf.getWidth(), bf.getHeight());
+			PixelWriter pw = wr.getPixelWriter();
+			for (int x = 0; x < bf.getWidth(); x++) {
+				for (int y = 0; y < bf.getHeight(); y++) {
+					pw.setArgb(x, y, bf.getRGB(x, y));
+				}
+			}
+		}
+		return wr;
 	}
 
 }

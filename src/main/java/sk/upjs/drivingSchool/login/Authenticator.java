@@ -37,6 +37,43 @@ public enum Authenticator {
 
 		return userSession;
 	}
+	
+	public UserSession create(String name, String surname, String phone, String username, String email,
+			String password, String passwdAgain) throws UserAlreadyExistsException {
+		if (name == null || surname == null  || username == null || email == null || password == null
+				|| passwdAgain == null) {
+			throw new SomethingInUserIsNullExeption();
+		}
+
+		if (name.trim().isEmpty() || surname.trim().isEmpty() || username.trim().isEmpty() || email.trim().isEmpty() || password.trim().isEmpty()
+				|| passwdAgain.trim().isEmpty()) {
+			throw new SomethingInUserIsNullExeption();
+		}
+		
+		if (!validateEmail(email)) {
+			throw new EmailNotValidException();
+		}
+
+		if (userExists(username)) {
+			throw new UserAlreadyExistsException();
+		}
+		
+		if (!password.equals(passwdAgain)) {
+			throw new BadPasswordException();
+		}
+
+		String hashedPassword = hashPassword(password);
+
+		// osetrenie null
+		if (phone == null) {
+			phone = "";
+		}
+		User createdUser = userDao.create(name, surname, phone, username, email, hashedPassword);
+		UserSession userSession = new UserSession(createdUser, createdUser.getId(), createdUser.getRole());
+		
+
+		return userSession;
+	}
 
 	public UserSession register(String name, String surname, String phone, String username, String email,
 			String password, String passwdAgain) throws UserAlreadyExistsException {

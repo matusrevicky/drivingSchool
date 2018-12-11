@@ -30,6 +30,12 @@ public class MemoryAvailableTimesDao implements AvailableTimesDao{
 		}
 		u.setAvailableTimes(availableTimes);
 		userDao.save(u);
+	}
+
+	@Override
+	public HashSet<AvailableTime> getAllCalendarEvents() {
+		// TODO Auto-generated method stub
+		return null;
 	}	 
 
 
