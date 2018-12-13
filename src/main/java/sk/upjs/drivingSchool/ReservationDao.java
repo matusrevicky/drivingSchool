@@ -13,4 +13,6 @@ public interface ReservationDao {
 	HashSet<Reservation> getReservationsByBothId(long instructorId, long studentId);
 
 	void saveReservations(HashSet<Reservation> reservations, long instructorId);
+
+	void saveReservations(long studentId, HashSet<Reservation> reservations);
 }

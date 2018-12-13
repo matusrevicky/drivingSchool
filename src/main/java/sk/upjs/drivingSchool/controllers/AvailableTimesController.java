@@ -33,6 +33,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import jfxtras.icalendarfx.VCalendar;
 import jfxtras.icalendarfx.components.VEvent;
+import jfxtras.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.icalendar.ICalendarAgenda;
 import sk.upjs.drivingSchool.App;
@@ -187,7 +188,7 @@ public class AvailableTimesController {
 			public void handle(ActionEvent event) {
 				saveAvailableTimes();
 				userDao.get(loggedInUser.getId()).setLastModified(LocalDateTime.now());
-
+				initializeCalendar();
 			}
 		});
 
@@ -308,6 +309,7 @@ public class AvailableTimesController {
 		HashSet<AvailableTime> hashSetOfAvailableTimes = new HashSet<AvailableTime>();
 
 		for (VEvent event : myCalendar.getVEvents()) {
+			event.setSummary("Voľný čas");
 			AvailableTime newAvailableTime = new AvailableTime();
 			newAvailableTime.setUserId(loggedInUser.getId());
 
@@ -318,7 +320,7 @@ public class AvailableTimesController {
 			str = event.getDateTimeEnd().getValue().toString();
 			l = LocalDateTime.parse(str.subSequence(0, str.indexOf('+')));
 			newAvailableTime.setEndTime(l);
-
+			
 			newAvailableTime.setEventString(event.toString());
 
 			hashSetOfAvailableTimes.add(newAvailableTime);

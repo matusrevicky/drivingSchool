@@ -59,7 +59,15 @@ public class MysqlReservationDao implements ReservationDao{
 		for(Reservation r : reservations) {
 			add(r);
 		}
-	}	
+	}
+	
+	@Override
+	public void saveReservations(long studentId, HashSet<Reservation> reservations) {
+		jdbcTemplate.update("DELETE FROM Reservation WHERE studentId = ?", studentId);	
+		for(Reservation r : reservations) {
+			add(r);
+		}
+	}
 	
 	private void add(Reservation reservation) {
 		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);

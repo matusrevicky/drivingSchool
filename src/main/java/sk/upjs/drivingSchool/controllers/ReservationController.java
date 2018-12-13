@@ -44,6 +44,7 @@ import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import jfxtras.icalendarfx.VCalendar;
+import jfxtras.icalendarfx.components.VDateTimeEnd;
 import jfxtras.icalendarfx.components.VEvent;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.icalendar.ICalendarAgenda;
@@ -59,7 +60,7 @@ import sk.upjs.drivingSchool.UserDao;
 import sk.upjs.drivingSchool.UserFxModel;
 import sk.upjs.drivingSchool.login.UserSessionManager;
 
-@SuppressWarnings("restriction") // FIXME vymaz tento supress warning
+@SuppressWarnings("restriction")
 public class ReservationController {
 
 	@FXML
@@ -124,9 +125,9 @@ public class ReservationController {
 
 	@FXML
 	private ImageView userImageView;
-	
+
 	@FXML
-    private CheckBox showAllStudentsAvailableTime;
+	private CheckBox showAllStudentsAvailableTime;
 
 	@FXML
 	private Agenda calendarOriginal;
@@ -146,16 +147,16 @@ public class ReservationController {
 	private boolean showAllStudentsAvailableTimeChecked = false;
 	private boolean showAllStudentsChecked = false;
 	private boolean showAllInstructorsChecked = false;
-	
-	//musia byt true
+
+	// prvykrat musia byt true
 	private boolean showAllStudentsChanged = true;
 	private boolean showAllInstructorsChanged = true;
 	private String searchInstructorString = "";
 	private String searchStudentString = "";
 
-	
-	
-	
+	String seenText = "Seen by student";
+	String notSeenText = "NOT seen by student";
+
 	private void initializeUser() {
 		long userId = UserSessionManager.INSTANCE.getCurrentUserSession().getUserId();
 		loggedInUser = userDao.get(userId);
@@ -169,7 +170,8 @@ public class ReservationController {
 			userImageView.setImage(returnImage("src\\main\\resources\\sk\\upjs\\drivingSchool\\pics\\Boss-3-icon.png"));
 		}
 		if (loggedInUser.getRole().equals(Role.ADMIN.getName())) {
-			userImageView.setImage(returnImage("src\\main\\resources\\sk\\upjs\\drivingSchool\\pics\\avatar-default-icon.png"));
+			userImageView.setImage(
+					returnImage("src\\main\\resources\\sk\\upjs\\drivingSchool\\pics\\avatar-default-icon.png"));
 		}
 
 		currentUserName.setText(loggedInUser.getUsername() + " Role: " + loggedInUser.getRole());
@@ -179,10 +181,12 @@ public class ReservationController {
 	void initialize() {
 
 		initializeUser();
-
+		if (loggedInUser.getRole().equals(Role.STUDENT.getName())) {
+			setMyReservationsAsSeen();
+		}
+		//countRidesDoneForAll();// alebo ridesDone pridavat rucne, nie oba sposoby naraz
 		checkSaveComponentsVisibility();
 		initializeLeftMenuComponents();
-		refreshComboBoxes();
 
 		if (loggedInUser.getRole().equals(Role.TEACHER.getName())) {
 			showAllStudents.setSelected(true);
@@ -196,18 +200,20 @@ public class ReservationController {
 			showAllInstructors.setSelected(true);
 			showAllInstructorsChecked = true;
 		}
-		initializeComponents();
+		showAllInstructorsChanged = true;
+		showAllStudentsChanged = true;
+
 		refreshComboBoxes();
+		initializeComponents();
+
 		if (loggedInUser.getRole().equals(Role.TEACHER.getName())) {
 			instructorModel = new UserFxModel(loggedInUser);
 			instructorComboBox.getSelectionModel().select(loggedInUser);
 		} else if (loggedInUser.getRole().equals(Role.STUDENT.getName())) {
 			studentModel = new UserFxModel(loggedInUser);
 			studentComboBox.getSelectionModel().select(loggedInUser);
-		} else {
-			// showAllInstructors.setSelected(true);
-			// showAllStudentsChecked = true;
 		}
+		enableOrDisableSaveButton();
 
 		// ak je agenda disable neda sa scrollovat
 		if (loggedInUser.getRole().equals(Role.STUDENT.getName())) {
@@ -218,7 +224,48 @@ public class ReservationController {
 
 	}
 
-	private void enableSaveButton() {
+	void setMyReservationsAsSeen() {
+		HashSet<Reservation> reservations = reservationDao.getReservationsByStudentId(loggedInUser.getId());
+		for (Reservation r : reservations) {
+			r.setSeenByStudent(true);
+			VEvent e = VEvent.parse(r.getEventString());
+			String summary = "";
+			if (e.getSummary() != null) {
+				summary = e.getSummary().toString();
+			}
+			if (summary.contains(notSeenText)) {
+				summary = summary.replace(notSeenText, seenText);
+				e.setSummary(summary);
+				r.setEventString(e.toString());
+			}
+			// ak este seen description nema
+			if (!summary.contains(seenText) && !summary.contains(notSeenText)) {
+				summary = summary + "\n" + seenText;
+				e.setSummary(summary);
+				r.setEventString(e.toString());
+			}
+		}
+		reservationDao.saveReservations(loggedInUser.getId(), reservations);
+		initializeCalendar();
+	}
+
+	/*void countRidesDoneForAll() {
+		for (User s : userDao.getAll(Role.STUDENT.getName(), true)) {
+			int rides = 0;
+			for (Reservation r : s.getReservations()) {
+				VEvent e = VEvent.parse(r.getEventString());
+				//if (e.getDateTimeStart() < now) {
+				//	rides++;
+				//}
+			}
+			if (s.getRidesDone() != rides) {
+				s.setRidesDone(rides);
+				userDao.save(loggedInUser);
+			}
+		}
+	}*/
+
+	private void enableOrDisableSaveButton() {
 		if (instructorComboBox.getSelectionModel().isEmpty() || studentForEventComboBox.getSelectionModel().isEmpty()) {
 			saveButton.setDisable(true);
 		} else {
@@ -274,12 +321,12 @@ public class ReservationController {
 	}
 
 	private void initializeComponents() {
-		
+
 		showAllStudentsAvailableTime.selectedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				showAllStudentsAvailableTimeChecked = newValue;
-				
+
 				if (showAllStudentsAvailableTimeChecked) {
 					if (borderPane == null)
 						borderPane = (BorderPane) calendarOriginal.getParent();
@@ -290,29 +337,26 @@ public class ReservationController {
 					} else {
 						System.out.println("Viac kalendarov naraz exception!");
 					}
-					
-					
+
 					StringBuilder sb = new StringBuilder();
 					DateTimeFormatter formatter;
 					sb.append("BEGIN:VCALENDAR\r\n");
 					HashSet<AvailableTime> reservationSet = new HashSet<AvailableTime>();
-					
-						reservationSet = availableTimesDao.getAllCalendarEvents();
-						for (AvailableTime reservation : reservationSet) {
-							sb.append(reservation.getEventString());
-							sb.append("\r\n");
-						}
-					
-						
+
+					reservationSet = availableTimesDao.getAllCalendarEvents();
+					for (AvailableTime reservation : reservationSet) {
+						sb.append(reservation.getEventString());
+						sb.append("\r\n");
+					}
+
 					if (instructorModel != null) {
 						instructorModel.setAvailableTimes(reservationSet);
 					}
-					
+
 					sb.append("END:VCALENDAR");
 					String s = sb.toString();
 					s.replaceAll("//", "/");
-					
-					
+
 					// String s = reservationsToString();
 					// System.out.println("---------------");
 					// System.out.println(s);
@@ -325,16 +369,15 @@ public class ReservationController {
 					if (myCalendar.getVEvents() != null) {
 						eventsBeforeChange.addAll(myCalendar.getVEvents());
 					}
-				}else {
+				} else {
 					StringBuilder sb = new StringBuilder();
 					DateTimeFormatter formatter;
 					sb.append("BEGIN:VCALENDAR\r\n");
-					
+
 					sb.append("END:VCALENDAR");
 					String s = sb.toString();
 					s.replaceAll("//", "/");
-					
-					
+
 					// String s = reservationsToString();
 					// System.out.println("---------------");
 					// System.out.println(s);
@@ -348,7 +391,7 @@ public class ReservationController {
 						eventsBeforeChange.addAll(myCalendar.getVEvents());
 					}
 				}
-				
+
 			}
 		});
 		showAllInstructors.selectedProperty().addListener(new ChangeListener<Boolean>() {
@@ -357,7 +400,7 @@ public class ReservationController {
 				showAllInstructorsChecked = newValue;
 				showAllInstructorsChanged = true;
 				refreshComboBoxes();
-				
+
 			}
 		});
 		showAllStudents.selectedProperty().addListener(new ChangeListener<Boolean>() {
@@ -366,14 +409,14 @@ public class ReservationController {
 				showAllStudentsChecked = newValue;
 				showAllStudentsChanged = true;
 				refreshComboBoxes();
-				
+
 			}
 		});
 
 		instructorComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<User>() {
 			@Override
 			public void changed(ObservableValue<? extends User> observable, User oldValue, User newValue) {
-				enableSaveButton();
+				enableOrDisableSaveButton();
 				if (newValue == null) {
 					instructorModel = null;
 				} else {
@@ -396,7 +439,7 @@ public class ReservationController {
 		studentForEventComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<User>() {
 			@Override
 			public void changed(ObservableValue<? extends User> observable, User oldValue, User newValue) {
-				enableSaveButton();
+				enableOrDisableSaveButton();
 				if (newValue == null) {
 					studentForALessonModel = null;
 				} else {
@@ -451,7 +494,7 @@ public class ReservationController {
 						HashSet<Reservation> reservations = instructorModel.getReservations();
 						Reservation r = new Reservation();
 						calendarEvent.setSummary(instructorModel.getUser().toString() + " \n"
-								+ studentForALessonModel.getUser().toString());
+								+ studentForALessonModel.getUser().toString() + " \n" + notSeenText);
 						r.setEventString(calendarEvent.toString());
 						r.setInstructorId(instructorModel.getUser().getId());
 						r.setStudentId(studentForALessonModel.getUser().getId());
@@ -507,7 +550,6 @@ public class ReservationController {
 	}
 
 	private void refreshComboBoxes() {
-		
 
 		if (showAllStudentsChanged) {
 			if (showAllStudentsChecked) {
@@ -553,9 +595,11 @@ public class ReservationController {
 
 		List<User> students = userDao.getAll(Role.STUDENT.getName(), true);
 		studentForEventComboBox.setItems(FXCollections.observableList(students));
+		studentForALessonModel = null;
 		if (!students.isEmpty()) {
 			if (searchStudentString == null || searchStudentString.isEmpty()) {
 				studentForEventComboBox.getSelectionModel().select(students.get(0));
+				studentForALessonModel = new UserFxModel(students.get(0));
 			} else {
 				System.out.println("TODO filter");// TODO filter podla mena
 			}
@@ -729,6 +773,10 @@ public class ReservationController {
 	}
 
 	private void saveReservations() {
+		if(loggedInUser.getRole().equals(Role.STUDENT.getName())) {
+			System.out.println("Student sa pokusil ulozit rezervacie");
+			return;
+		}
 		reservationDao.saveReservations(instructorModel.getReservations(), instructorModel.getUser().getId());
 	}
 
