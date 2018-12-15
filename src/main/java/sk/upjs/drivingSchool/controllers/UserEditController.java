@@ -96,28 +96,22 @@ public class UserEditController {
 		loggedInUser = userDao.get(userId);
 
 		// zabezpeci ze student ani ucitel si nemoze zmenit rolu, pocet jazd, a aktivitu
-		if (loggedInUser.getRole().equals(Role.STUDENT.getName())
-				|| loggedInUser.getRole().equals(Role.TEACHER.getName())) {
+		if (loggedInUser.getRole().equals(Role.STUDENT.getName())) {
 			roleComboBox.setDisable(true);
-			//ridesDoneSpinner.setDisable(true);
+			ridesDoneSpinner.setDisable(true);
 			checkBoxActive.setDisable(true);
-		} else {
-			roleComboBox.setDisable(false);
-			//ridesDoneSpinner.setDisable(false);
-			checkBoxActive.setDisable(false);
-		}
-		
-		// zabezpeci ze ucitel si nemoze zmenit rolu, a aktivitu, 
-		if (loggedInUser.getRole().equals(Role.TEACHER.getName())) {
+		} else if (loggedInUser.getRole().equals(Role.TEACHER.getName())) {
+			// zabezpeci ze ucitel si nemoze zmenit rolu, a aktivitu, 
 			roleComboBox.setDisable(true);
 			checkBoxActive.setDisable(true);
 		} else {
 			roleComboBox.setDisable(false);
+			ridesDoneSpinner.setDisable(false);
 			checkBoxActive.setDisable(false);
 		}
 		
-		// ucitel nema pravo menit uzivatelom hesla
-		if ( user.getId()==loggedInUser.getId()) {
+		// heslo vie menit iba admin alebo uzivatel sam
+		if ( user.getId()==loggedInUser.getId() || loggedInUser.getRole().equals(Role.ADMIN.getName())) {
 			passwordTextField.setDisable(false);
 			passwordAgainTextField.setDisable(false);
 		} else {
