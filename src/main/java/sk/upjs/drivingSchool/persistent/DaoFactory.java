@@ -1,4 +1,4 @@
-package sk.upjs.drivingSchool;
+package sk.upjs.drivingSchool.persistent;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -35,12 +35,13 @@ public enum DaoFactory {
 		return reservationDao;
 	}
 	
+	// jdbc:mysql://localhost/mydbtest?server pri beznom uzivani treba jdbc:mysql://localhost/mydb?server
 	private JdbcTemplate getJdbcTemplate() {
 		if (jdbcTemplate == null) {
 			MysqlDataSource dataSource = new MysqlDataSource();
 			dataSource.setUser("root");
 			dataSource.setPassword("databazy");
-			dataSource.setDatabaseName("mydb");
+			dataSource.setDatabaseName("mydb"); //mydbtest ak testujem
 			dataSource.setUrl("jdbc:mysql://localhost/mydb?serverTimezone=Europe/Bratislava");//driving_school
 			jdbcTemplate = new JdbcTemplate(dataSource);
 		}

@@ -131,6 +131,8 @@
                                     <Font size="24.0" />
                                  </font>
                               </Label>
+                              <CheckBox fx:id="showAllStudentsAvailableTime" layoutX="278.0" layoutY="19.0" mnemonicParsing="false" text="Show all students" />
+                              <CheckBox fx:id="showAllTeachersAvailableTime" layoutX="409.0" layoutY="19.0" mnemonicParsing="false" text="Show all teachers" />
                            </children>
                         </Pane>
                      </top>

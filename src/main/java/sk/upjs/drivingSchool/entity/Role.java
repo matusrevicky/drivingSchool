@@ -1,4 +1,4 @@
-package sk.upjs.drivingSchool;
+package sk.upjs.drivingSchool.entity;
 
 import java.util.ArrayList;
 import java.util.HashMap;

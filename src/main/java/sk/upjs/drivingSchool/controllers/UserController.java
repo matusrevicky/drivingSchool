@@ -22,35 +22,24 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.util.Callback;
-import javafx.util.StringConverter;
 import sk.upjs.drivingSchool.App;
-import sk.upjs.drivingSchool.DaoFactory;
-import sk.upjs.drivingSchool.Role;
-import sk.upjs.drivingSchool.User;
-import sk.upjs.drivingSchool.UserDao;
-import sk.upjs.drivingSchool.UserFxModel;
+import sk.upjs.drivingSchool.entity.Role;
+import sk.upjs.drivingSchool.entity.User;
 import sk.upjs.drivingSchool.login.UserSessionManager;
+import sk.upjs.drivingSchool.persistent.DaoFactory;
+import sk.upjs.drivingSchool.persistent.UserDao;
 
 public class UserController {
 
@@ -108,6 +97,7 @@ public class UserController {
 		long userId = UserSessionManager.INSTANCE.getCurrentUserSession().getUserId();
 		loggedInUser = userDao.get(userId);
 
+		// pridaj ikony
 		if (loggedInUser.getRole().equals(Role.STUDENT.getName())) {
 			userImageView
 					.setImage(returnImage("src\\main\\resources\\sk\\upjs\\drivingSchool\\pics\\Student-3-icon.png"));
@@ -125,22 +115,137 @@ public class UserController {
 	@FXML
 	void initialize() {
 
+		//zabezpeci ze sa neda vymazat neoznaceny
 		editButton.setDisable(true);
-		initializeUser();
+		deleteUserButton.setDisable(true);
+		
+		initializeUser(); // nastavi ikonu podla role, aj meno...
+		loadUsersModel(); // zobrazi tabulku so vsetkymi users
 
-		// zobrazi vsetkych
-		usersModel = FXCollections.observableArrayList(UserDao.getAll());
+		showAllUsersButtonVisibility();
+		initializeLeftMenuComponents();
 
+		editButtonAction();
+		createUserButtonAction();
+		deleteUserButtonAction();
+		searchButtonAction();
+
+		editableTable();
+	
+	}
+
+	private void editableTable() {
+		makeStringColumn(new TableColumn<>("ID"), "Id", "ID");
+		makeStringColumn(new TableColumn<>("Active"), "active", "Aktívny");
+		makeStringColumn(new TableColumn<>("Role"), "role", "Rola");
+		makeStringColumn(new TableColumn<>("Name"), "fname", "Meno");
+		makeStringColumn(new TableColumn<>("Surname"), "lname", "Priezvisko");
+		makeStringColumn(new TableColumn<>("Rides done"), "ridesDone", "jazdy");
+		makeStringColumn(new TableColumn<>("Username"), "username", "Prihlas. meno");
+		makeStringColumn(new TableColumn<>("E-mail"), "email", "E-mail");
+		makeStringColumn(new TableColumn<>("Phone number"), "phoneNumber", "tel. číslo");
+		makeStringColumn(new TableColumn<>("Password"), "password", "Heslo");
+
+		makeDateCreatedColumn();
+		makeLastModifiedColumn();
+		makeLastLoginColumn();
+
+		userTableView.setItems(usersModel);
+		userTableView.setEditable(true);
+
+		ContextMenu contextMenu = new ContextMenu();
+		for (Entry<String, BooleanProperty> entry : columnsVisibility.entrySet()) {
+			CheckMenuItem menuItem = new CheckMenuItem(entry.getKey());
+			menuItem.selectedProperty().bindBidirectional(entry.getValue());
+			contextMenu.getItems().add(menuItem);
+		}
+		userTableView.setContextMenu(contextMenu);
+
+		userTableView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<User>() {
+			@Override
+			public void changed(ObservableValue<? extends User> observable, User oldValue, User newValue) {
+				if (newValue == null) {
+					editButton.setDisable(true);
+					deleteUserButton.setDisable(true);
+				} else {
+					editButton.setDisable(false);
+					deleteUserButton.setDisable(false);
+				}
+				selectedUser.set(newValue);
+			}
+		});
+	}
+
+	private void showAllUsersButtonVisibility() {
 		if (loggedInUser.getRole().equals(Role.STUDENT.getName())) {
 			showUsersButton.setDisable(true);
-			// showUsersButton.setVisible(false);
+		} else {
+			showUsersButton.setDisable(false);
 		}
+	}
 
+	private void editButtonAction() {
+		editButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				UserEditController editController = new UserEditController(selectedUser.get());
+				App.showModalWindow(editController, "UserEdit.fxml");
+				// tento kod sa spusti az po zatvoreni okna
+				usersModel.setAll(UserDao.getAll());
+			}
+		});
+	}
+
+	private void createUserButtonAction() {
+		createUserButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				App.showModalWindow(new CreateUserController(), "CreateNewUser.fxml");
+				// tento kod sa spusti az po zatvoreni okna
+				usersModel.setAll(UserDao.getAll());
+			}
+		});
+	}
+
+	private void deleteUserButtonAction() {
+		deleteUserButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				userDao.delete(selectedUser.get().getId());
+				usersModel.setAll(UserDao.getAll());
+			}
+		});
+	}
+
+	private void searchButtonAction() {
+		searchButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				usersModel = FXCollections.observableArrayList(UserDao.search(nameTextField.getText()));
+
+				userTableView.setItems(usersModel);
+				userTableView.setEditable(true);
+
+				ContextMenu contextMenu = new ContextMenu();
+				for (Entry<String, BooleanProperty> entry : columnsVisibility.entrySet()) {
+					CheckMenuItem menuItem = new CheckMenuItem(entry.getKey());
+					menuItem.selectedProperty().bindBidirectional(entry.getValue());
+					contextMenu.getItems().add(menuItem);
+				}
+				userTableView.setContextMenu(contextMenu);
+			}
+		});
+	}
+
+	private void initializeLeftMenuComponents() {
 		homeButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-				// App.switchScene(new HomeSceneController(), "HomeScreen.fxml");
 				App.switchScene(new ReservationController(), "ReservationScreen.fxml");
 			}
 		});
@@ -176,98 +281,11 @@ public class UserController {
 				App.switchScene(new RegisterSceneController(), "RegisterScreen.fxml");
 			}
 		});
-
-		editButton.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				UserEditController editController = new UserEditController(selectedUser.get());
-				App.showModalWindow(editController, "UserEdit.fxml");
-				// tento kod sa spusti az po zatvoreni okna
-				usersModel.setAll(UserDao.getAll());
-			}
-		});
-
-		createUserButton.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				App.showModalWindow(new CreateUserController(), "CreateNewUser.fxml");
-				// tento kod sa spusti az po zatvoreni okna
-				usersModel.setAll(UserDao.getAll());
-			}
-		});
-
-		
-
-		makeStringColumn(new TableColumn<>("ID"), "Id", "ID");
-		makeStringColumn(new TableColumn<>("Active"), "active", "Aktívny");
-		makeStringColumn(new TableColumn<>("Role"), "role", "Rola");
-		makeStringColumn(new TableColumn<>("Name"), "fname", "Meno");
-		makeStringColumn(new TableColumn<>("Surname"), "lname", "Priezvisko");
-		makeStringColumn(new TableColumn<>("Rides done"), "ridesDone", "jazdy");
-		makeStringColumn(new TableColumn<>("Username"), "username", "Prihlas. meno");
-		makeStringColumn(new TableColumn<>("E-mail"), "email", "E-mail");
-		makeStringColumn(new TableColumn<>("Phone number"), "phoneNumber", "tel. číslo");
-		makeStringColumn(new TableColumn<>("Password"), "password", "Heslo");
-
-		makeDateCreatedColumn();
-		makeLastModifiedColumn();
-		makeLastLoginColumn();
-
-		userTableView.setItems(usersModel);
-		userTableView.setEditable(true);
-
-		ContextMenu contextMenu = new ContextMenu();
-		for (Entry<String, BooleanProperty> entry : columnsVisibility.entrySet()) {
-			CheckMenuItem menuItem = new CheckMenuItem(entry.getKey());
-			menuItem.selectedProperty().bindBidirectional(entry.getValue());
-			contextMenu.getItems().add(menuItem);
-		}
-		userTableView.setContextMenu(contextMenu);
-
-		userTableView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<User>() {
-			@Override
-			public void changed(ObservableValue<? extends User> observable, User oldValue, User newValue) {
-				if (newValue == null) {
-					editButton.setDisable(true);
-				} else {
-					editButton.setDisable(false);
-				}
-				selectedUser.set(newValue);
-			}
-		});
-
-		
-		deleteUserButton.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				userDao.delete(selectedUser.get().getId());
-				usersModel.setAll(UserDao.getAll());
-			}
-		});
-		
-		
-		// TODO este zrefaktoruj
-		searchButton.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				usersModel = FXCollections.observableArrayList(UserDao.search(nameTextField.getText()));
-
-				userTableView.setItems(usersModel);
-				userTableView.setEditable(true);
-
-				ContextMenu contextMenu = new ContextMenu();
-				for (Entry<String, BooleanProperty> entry : columnsVisibility.entrySet()) {
-					CheckMenuItem menuItem = new CheckMenuItem(entry.getKey());
-					menuItem.selectedProperty().bindBidirectional(entry.getValue());
-					contextMenu.getItems().add(menuItem);
-				}
-				userTableView.setContextMenu(contextMenu);
-			}
-		});
+	}
+	
+	
+	private void loadUsersModel() {
+		usersModel = FXCollections.observableArrayList(UserDao.getAll());
 	}
 
 	void makeStringColumn(TableColumn<User, Long> column, String userPropertyName, String visibilityPropertyName) {

@@ -1,7 +1,10 @@
-package sk.upjs.drivingSchool;
+package sk.upjs.drivingSchool.persistent;
 
 import java.util.HashSet;
 import java.util.List;
+
+import sk.upjs.drivingSchool.entity.AvailableTime;
+import sk.upjs.drivingSchool.entity.User;
 
 public class MemoryAvailableTimesDao implements AvailableTimesDao{
 
@@ -34,6 +37,24 @@ public class MemoryAvailableTimesDao implements AvailableTimesDao{
 
 	@Override
 	public HashSet<AvailableTime> getAllCalendarEvents() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public HashSet<String> getAllCalendarEventsUID() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public HashSet<AvailableTime> getAllStudentsCalendarEvents() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public HashSet<AvailableTime> getAllTeachersCalendarEvents() {
 		// TODO Auto-generated method stub
 		return null;
 	}	 

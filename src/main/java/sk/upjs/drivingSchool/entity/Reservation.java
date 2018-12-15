@@ -1,6 +1,10 @@
-package sk.upjs.drivingSchool;
+package sk.upjs.drivingSchool.entity;
 
 public class Reservation {
+	
+	// vsetky zakomentovane veci tam sice byt mozu, ale po pouziti kniznice jxtras, kde 
+	// kalendar bere ako vstup cely string(string uz obsahuje start, koniec, farbu, opakokvanie...), 
+	// uz neboli dolezite
 	//private Long reservationId;
 	//private LocalDateTime startDate;
 	//private LocalDateTime endDate;
@@ -9,6 +13,32 @@ public class Reservation {
 	private Long instructorId;
 	private Long studentId;
 	private boolean seenByStudent;
+
+	public Long getInstructorId() {
+		return instructorId;
+	}
+	public void setInstructorId(Long instructorId) {
+		this.instructorId = instructorId;
+	}
+	public Long getStudentId() {
+		return studentId;
+	}
+	public void setStudentId(Long stundetId) {
+		this.studentId = stundetId;
+	}
+	public boolean getSeenByStudent() {
+		return seenByStudent;
+	}
+	public void setSeenByStudent(boolean seenByStudent) {
+		this.seenByStudent = seenByStudent;
+	}	
+	public String getEventString() {
+		return eventString;
+	}
+	public void setEventString(String eventString) {
+		this.eventString = eventString;
+	}	
+	
 	
 	/*public Long getReservationId() {
 		return reservationId;
@@ -34,28 +64,5 @@ public class Reservation {
 	public void setDateCreated(LocalDateTime dateCreated) {
 		this.dateCreated = dateCreated;
 	}*/
-	public Long getInstructorId() {
-		return instructorId;
-	}
-	public void setInstructorId(Long instructorId) {
-		this.instructorId = instructorId;
-	}
-	public Long getStudentId() {
-		return studentId;
-	}
-	public void setStudentId(Long stundetId) {
-		this.studentId = stundetId;
-	}
-	public boolean getSeenByStudent() {
-		return seenByStudent;
-	}
-	public void setSeenByStudent(boolean seenByStudent) {
-		this.seenByStudent = seenByStudent;
-	}	
-	public String getEventString() {
-		return eventString;
-	}
-	public void setEventString(String eventString) {
-		this.eventString = eventString;
-	}	
+	
 }

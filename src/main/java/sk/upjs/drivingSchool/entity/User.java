@@ -1,4 +1,4 @@
-package sk.upjs.drivingSchool;
+package sk.upjs.drivingSchool.entity;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;

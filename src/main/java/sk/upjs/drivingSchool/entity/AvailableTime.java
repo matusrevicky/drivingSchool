@@ -1,4 +1,4 @@
-package sk.upjs.drivingSchool;
+package sk.upjs.drivingSchool.entity;
 
 import java.time.LocalDateTime;
 
@@ -8,8 +8,18 @@ public class AvailableTime {
 	private LocalDateTime endTime;
 	private Long myUserId;
 	private String eventString; 
+	private String eventStringUID; 
 
 	
+	
+	public String getEventStringUID() {
+		return eventStringUID;
+	}
+
+	public void setEventStringUID(String eventStringUID) {
+		this.eventStringUID = eventStringUID;
+	}
+
 	public String getEventString() {
 		return eventString;
 	}
@@ -42,6 +52,10 @@ public class AvailableTime {
 		this.endTime = endTime;
 	}
 
+	public void setMyUserId(Long myUserId) {
+		this.myUserId = myUserId;
+	}
+
 	public Long getMyUserId() {
 		return myUserId;
 	}
@@ -52,8 +66,16 @@ public class AvailableTime {
 
 	@Override
 	public String toString() {
-		return "AvaibleTimes [avaibleTimeId=" + id + ", startTime=" + startTime + ", endTime=" + endTime
-				+ ", userId=" + myUserId + "]";
+		return "AvailableTime [id=" + id + ", startTime=" + startTime + ", endTime=" + endTime + ", myUserId="
+				+ myUserId + ", eventString=" + eventString + ", eventStringUID=" + eventStringUID + "]";
 	}
+
+//	@Override
+//	public String toString() {
+//		return "AvaibleTimes [avaibleTimeId=" + id + ", startTime=" + startTime + ", endTime=" + endTime
+//				+ ", userId=" + myUserId + "]";
+//	}
+	
+	
 
 }

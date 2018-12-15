@@ -1,4 +1,4 @@
-package sk.upjs.drivingSchool;
+package sk.upjs.drivingSchool.persistent;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,6 +8,8 @@ import java.util.Map;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+
+import sk.upjs.drivingSchool.entity.Reservation;
 
 public class MysqlReservationDao implements ReservationDao{
 	

@@ -1,5 +1,6 @@
 package sk.upjs.drivingSchool.login;
 
+// kvoli bussines
 public enum UserSessionManager {
     INSTANCE;
 

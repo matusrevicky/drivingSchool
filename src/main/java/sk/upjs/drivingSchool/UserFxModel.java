@@ -1,9 +1,8 @@
 package sk.upjs.drivingSchool;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Set;
+
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -13,7 +12,9 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import sk.upjs.drivingSchool.User;
+import sk.upjs.drivingSchool.entity.AvailableTime;
+import sk.upjs.drivingSchool.entity.Reservation;
+import sk.upjs.drivingSchool.entity.User;
 
 public class UserFxModel {
 	
@@ -51,6 +52,7 @@ public class UserFxModel {
 		setReservations(user.getReservations());
 		setPassword(user.getPassword());
 	}
+	
 	public User getUser() {
 		user.setFname(getFname());
 		user.setLname(getLname());
@@ -69,7 +71,6 @@ public class UserFxModel {
 		return user;
 	}	
 	
-	//TO-DO get, set a StringProperty pre vsetko ostatne
 	
 	public String getFname() {
 		return fname.get();

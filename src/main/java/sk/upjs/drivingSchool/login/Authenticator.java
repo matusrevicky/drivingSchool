@@ -7,9 +7,9 @@ import java.util.regex.Pattern;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import sk.upjs.drivingSchool.DaoFactory;
-import sk.upjs.drivingSchool.User;
-import sk.upjs.drivingSchool.UserDao;
+import sk.upjs.drivingSchool.entity.User;
+import sk.upjs.drivingSchool.persistent.DaoFactory;
+import sk.upjs.drivingSchool.persistent.UserDao;
 
 public enum Authenticator {
 
@@ -38,6 +38,7 @@ public enum Authenticator {
 		return userSession;
 	}
 	
+	// podobne ako registracia, ale bez prihlasenia vytvoreneho uzivatela
 	public UserSession create(String name, String surname, String phone, String username, String email,
 			String password, String passwdAgain) throws UserAlreadyExistsException {
 		if (name == null || surname == null  || username == null || email == null || password == null
@@ -64,17 +65,16 @@ public enum Authenticator {
 
 		String hashedPassword = hashPassword(password);
 
-		// osetrenie null
 		if (phone == null) {
 			phone = "";
 		}
 		User createdUser = userDao.create(name, surname, phone, username, email, hashedPassword);
 		UserSession userSession = new UserSession(createdUser, createdUser.getId(), createdUser.getRole());
 		
-
 		return userSession;
 	}
 
+	//  po regisracii sa hned aj prihlasi
 	public UserSession register(String name, String surname, String phone, String username, String email,
 			String password, String passwdAgain) throws UserAlreadyExistsException {
 		if (name == null || surname == null  || username == null || email == null || password == null
@@ -101,7 +101,6 @@ public enum Authenticator {
 
 		String hashedPassword = hashPassword(password);
 
-		// osetrenie null
 		if (phone == null) {
 			phone = "";
 		}
@@ -112,6 +111,7 @@ public enum Authenticator {
 		return userSession;
 	}
 
+	// pouzite pomale hashovanie
 	public String hashPassword(String plainText) {
 		String salt = BCrypt.gensalt();
 		return BCrypt.hashpw(plainText, salt);
@@ -128,6 +128,7 @@ public enum Authenticator {
 		return false;
 	}
 
+	// regularny vyraz inspirovany https://www.regular-expressions.info/email.html
 	public static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
 			Pattern.CASE_INSENSITIVE);
 

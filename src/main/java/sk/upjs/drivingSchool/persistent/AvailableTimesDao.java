@@ -1,15 +1,21 @@
-package sk.upjs.drivingSchool;
+package sk.upjs.drivingSchool.persistent;
 
 import java.util.HashSet;
-import java.util.List;
+
+
+import sk.upjs.drivingSchool.entity.AvailableTime;
 
 public interface AvailableTimesDao {
-	
-	//HashSet<AvailableTime> getAll();
 
 	HashSet<AvailableTime> getAvailableTimesByUserId(long userId);
 
 	void saveAvailableTimesWithUserId(HashSet<AvailableTime> availableTimes, long userId);
 
 	HashSet<AvailableTime> getAllCalendarEvents();
+
+	HashSet<String> getAllCalendarEventsUID();
+
+	HashSet<AvailableTime> getAllStudentsCalendarEvents();
+
+	HashSet<AvailableTime> getAllTeachersCalendarEvents();
 }

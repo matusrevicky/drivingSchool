@@ -37,14 +37,15 @@ import jfxtras.icalendarfx.properties.component.descriptive.Categories;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.icalendar.ICalendarAgenda;
 import sk.upjs.drivingSchool.App;
-import sk.upjs.drivingSchool.AvailableTime;
-import sk.upjs.drivingSchool.AvailableTimesDao;
-import sk.upjs.drivingSchool.DaoFactory;
-import sk.upjs.drivingSchool.Role;
-import sk.upjs.drivingSchool.User;
-import sk.upjs.drivingSchool.UserDao;
 import sk.upjs.drivingSchool.UserFxModel;
+import sk.upjs.drivingSchool.entity.AvailableTime;
+import sk.upjs.drivingSchool.entity.Reservation;
+import sk.upjs.drivingSchool.entity.Role;
+import sk.upjs.drivingSchool.entity.User;
 import sk.upjs.drivingSchool.login.UserSessionManager;
+import sk.upjs.drivingSchool.persistent.AvailableTimesDao;
+import sk.upjs.drivingSchool.persistent.DaoFactory;
+import sk.upjs.drivingSchool.persistent.UserDao;
 
 @SuppressWarnings("restriction")
 public class AvailableTimesController {
@@ -102,6 +103,17 @@ public class AvailableTimesController {
 	@FXML
 	private ComboBox<User> nameComboBox;
 
+	@FXML
+	private CheckBox showAllStudentsAvailableTime;
+	@FXML
+	private CheckBox showAllTeachersAvailableTime;
+
+
+	private boolean showAllStudentsAvailableTimeChecked = false;
+	private boolean showAllTeachersAvailableTimeChecked = false;
+	
+	
+
 	private AvailableTimesDao availableTimesDao = DaoFactory.INSTANCE.getAvailableTimesDao();
 	private UserDao userDao = DaoFactory.INSTANCE.getUserDao();
 	private UserFxModel userModel;
@@ -142,11 +154,222 @@ public class AvailableTimesController {
 			// showUsersButton.setVisible(false);
 		}
 
+		leftMenuInitialize();
+		saveButtonAction();
+		weekLeftButtonAction();
+		weekRightButtonAction();
+
+		showAllTeachersAvailableTime.selectedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				showAllTeachersAvailableTimeChecked = newValue;
+
+				if (showAllTeachersAvailableTimeChecked  ) {
+					// saveButton.setDisable(true);
+					
+					if (borderPane == null)
+						borderPane = (BorderPane) calendarOriginal.getParent();
+					if (borderPane.getChildren() == null || borderPane.getChildren().size() == 0) {
+
+					} else if (borderPane.getChildren().size() == 1) {
+						borderPane.getChildren().remove(0);
+					} else {
+						System.out.println("Viac kalendarov naraz exception!");
+					}
+
+					StringBuilder sb = new StringBuilder();
+					DateTimeFormatter formatter;
+					sb.append("BEGIN:VCALENDAR\r\n");
+					HashSet<AvailableTime> reservationSet = new HashSet<AvailableTime>();
+
+					reservationSet = availableTimesDao.getAllTeachersCalendarEvents();
+					if (showAllStudentsAvailableTimeChecked) {
+						reservationSet.addAll(availableTimesDao.getAllStudentsCalendarEvents());
+					}
+					
+					for (AvailableTime reservation : reservationSet) {
+						sb.append(reservation.getEventString());
+						sb.append("\r\n");
+					}
+
+					sb.append("END:VCALENDAR");
+					String s = sb.toString();
+					s.replaceAll("//", "/");
+
+					myCalendar = VCalendar.parse(s);
+
+					calendarAgenda = new ICalendarAgenda(myCalendar);
+					borderPane.setCenter(calendarAgenda);
+
+				} else {
+					if (showAllStudentsAvailableTimeChecked) {
+						if (borderPane == null)
+							borderPane = (BorderPane) calendarOriginal.getParent();
+						if (borderPane.getChildren() == null || borderPane.getChildren().size() == 0) {
+
+						} else if (borderPane.getChildren().size() == 1) {
+							borderPane.getChildren().remove(0);
+						} else {
+							System.out.println("Viac kalendarov naraz exception!");
+						}
+
+						StringBuilder sb = new StringBuilder();
+						DateTimeFormatter formatter;
+						sb.append("BEGIN:VCALENDAR\r\n");
+						HashSet<AvailableTime> reservationSet = new HashSet<AvailableTime>();
+
+						reservationSet = availableTimesDao.getAllStudentsCalendarEvents();
+						if (showAllTeachersAvailableTimeChecked) {
+							reservationSet.addAll(availableTimesDao.getAllTeachersCalendarEvents());
+						}
+						
+						for (AvailableTime reservation : reservationSet) {
+							sb.append(reservation.getEventString());
+							sb.append("\r\n");
+						}
+
+						sb.append("END:VCALENDAR");
+						String s = sb.toString();
+						s.replaceAll("//", "/");
+
+						myCalendar = VCalendar.parse(s);
+
+						calendarAgenda = new ICalendarAgenda(myCalendar);
+						borderPane.setCenter(calendarAgenda);
+					} else {
+						refreshNameComboBox();
+					}
+					// saveButton.setDisable(false);
+				//	refreshNameComboBox();
+				}
+			}
+		});
+
+		
+		showAllStudentsAvailableTime.selectedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				showAllStudentsAvailableTimeChecked = newValue;
+
+				if (showAllStudentsAvailableTimeChecked) {
+					// saveButton.setDisable(true);
+
+					if (borderPane == null)
+						borderPane = (BorderPane) calendarOriginal.getParent();
+					if (borderPane.getChildren() == null || borderPane.getChildren().size() == 0) {
+
+					} else if (borderPane.getChildren().size() == 1) {
+						borderPane.getChildren().remove(0);
+					} else {
+						System.out.println("Viac kalendarov naraz exception!");
+					}
+
+					StringBuilder sb = new StringBuilder();
+					DateTimeFormatter formatter;
+					sb.append("BEGIN:VCALENDAR\r\n");
+					HashSet<AvailableTime> reservationSet = new HashSet<AvailableTime>();
+
+					reservationSet = availableTimesDao.getAllStudentsCalendarEvents();
+					if (showAllTeachersAvailableTimeChecked) {
+						reservationSet.addAll(availableTimesDao.getAllTeachersCalendarEvents());
+					}
+					
+					for (AvailableTime reservation : reservationSet) {
+						sb.append(reservation.getEventString());
+						sb.append("\r\n");
+					}
+
+					sb.append("END:VCALENDAR");
+					String s = sb.toString();
+					s.replaceAll("//", "/");
+
+					myCalendar = VCalendar.parse(s);
+
+					calendarAgenda = new ICalendarAgenda(myCalendar);
+					borderPane.setCenter(calendarAgenda);
+
+				} else {
+					if (showAllTeachersAvailableTimeChecked) {
+						if (borderPane == null)
+							borderPane = (BorderPane) calendarOriginal.getParent();
+						if (borderPane.getChildren() == null || borderPane.getChildren().size() == 0) {
+
+						} else if (borderPane.getChildren().size() == 1) {
+							borderPane.getChildren().remove(0);
+						} else {
+							System.out.println("Viac kalendarov naraz exception!");
+						}
+
+						StringBuilder sb = new StringBuilder();
+						DateTimeFormatter formatter;
+						sb.append("BEGIN:VCALENDAR\r\n");
+						HashSet<AvailableTime> reservationSet = new HashSet<AvailableTime>();
+
+						reservationSet = availableTimesDao.getAllTeachersCalendarEvents();
+						if (showAllStudentsAvailableTimeChecked) {
+							reservationSet.addAll(availableTimesDao.getAllStudentsCalendarEvents());
+						}
+						
+						for (AvailableTime reservation : reservationSet) {
+							sb.append(reservation.getEventString());
+							sb.append("\r\n");
+						}
+
+						sb.append("END:VCALENDAR");
+						String s = sb.toString();
+						s.replaceAll("//", "/");
+
+						myCalendar = VCalendar.parse(s);
+
+						calendarAgenda = new ICalendarAgenda(myCalendar);
+						borderPane.setCenter(calendarAgenda);
+					} else {
+						refreshNameComboBox();
+					}
+					// saveButton.setDisable(false);
+					//refreshNameComboBox();
+				}
+			}
+		});
+	}
+
+	private void weekRightButtonAction() {
+		weekRightButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				LocalDateTime l = calendarAgenda.getDisplayedLocalDateTime().plus(Period.ofWeeks(1));
+				calendarAgenda.setDisplayedLocalDateTime(l);
+			}
+		});
+	}
+
+	private void weekLeftButtonAction() {
+		weekLeftButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				LocalDateTime l = calendarAgenda.getDisplayedLocalDateTime().minus(Period.ofWeeks(1));
+				calendarAgenda.setDisplayedLocalDateTime(l);
+			}
+		});
+	}
+
+	private void saveButtonAction() {
+		saveButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				saveAvailableTimes();
+				userDao.get(loggedInUser.getId()).setLastModified(LocalDateTime.now());
+				initializeCalendar();
+
+			}
+		});
+	}
+
+	private void leftMenuInitialize() {
 		homeButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-				// App.switchScene(new HomeSceneController(), "HomeScreen.fxml");
 				App.switchScene(new ReservationController(), "ReservationScreen.fxml");
 			}
 		});
@@ -180,30 +403,6 @@ public class AvailableTimesController {
 			@Override
 			public void handle(ActionEvent event) {
 				App.switchScene(new RegisterSceneController(), "RegisterScreen.fxml");
-			}
-		});
-
-		saveButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				saveAvailableTimes();
-				userDao.get(loggedInUser.getId()).setLastModified(LocalDateTime.now());
-				initializeCalendar();
-			}
-		});
-
-		weekLeftButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				LocalDateTime l = calendarAgenda.getDisplayedLocalDateTime().minus(Period.ofWeeks(1));
-				calendarAgenda.setDisplayedLocalDateTime(l);
-			}
-		});
-		weekRightButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				LocalDateTime l = calendarAgenda.getDisplayedLocalDateTime().plus(Period.ofWeeks(1));
-				calendarAgenda.setDisplayedLocalDateTime(l);
 			}
 		});
 	}
@@ -306,10 +505,20 @@ public class AvailableTimesController {
 	}
 
 	private void saveAvailableTimes() {
-		HashSet<AvailableTime> hashSetOfAvailableTimes = new HashSet<AvailableTime>();
 
+		UserFxModel helperModel = userModel;
+
+		HashSet<AvailableTime> hashSetOfAvailableTimes = new HashSet<>();
+
+		HashSet<String> hashSetOfAvailableTimes2 = availableTimesDao.getAllCalendarEventsUID();
+
+		// System.out.println(hashSetOfAvailableTimes2);
 		for (VEvent event : myCalendar.getVEvents()) {
-			event.setSummary("Voľný čas");
+			if (hashSetOfAvailableTimes2.contains(event.getUniqueIdentifier().getValue())) {
+				continue;
+			}
+
+			event.setSummary("Free Time \r\n" + helperModel.getFname() + helperModel.getLname());
 			AvailableTime newAvailableTime = new AvailableTime();
 			newAvailableTime.setUserId(loggedInUser.getId());
 
@@ -320,14 +529,37 @@ public class AvailableTimesController {
 			str = event.getDateTimeEnd().getValue().toString();
 			l = LocalDateTime.parse(str.subSequence(0, str.indexOf('+')));
 			newAvailableTime.setEndTime(l);
-			
+
 			newAvailableTime.setEventString(event.toString());
+			newAvailableTime.setEventStringUID(event.getUniqueIdentifier().getValue());
 
 			hashSetOfAvailableTimes.add(newAvailableTime);
+
 		}
 
+		HashSet<AvailableTime> newAvailableTimeSet = new HashSet<>();
+		for (VEvent calendarEvent : myCalendar.getVEvents()) {
+			for (AvailableTime modelavailableTime : helperModel.getAvailableTimes()) {
+				VEvent modelEvent = VEvent.parse(modelavailableTime.getEventString());
+				if (calendarEvent.getUniqueIdentifier().getValue()
+						.equals(modelEvent.getUniqueIdentifier().getValue())) {
+					modelavailableTime.setEventString(calendarEvent.toString());
+					newAvailableTimeSet.add(modelavailableTime);
+					// break;
+				}
+			}
+		}
+
+		hashSetOfAvailableTimes.addAll(newAvailableTimeSet);
+
 		availableTimesDao.saveAvailableTimesWithUserId(hashSetOfAvailableTimes, loggedInUser.getId());
-		// userDao.get(loggedInUser.getUserId()).setAvailableTimes(hashSetOfAvailableTimes);
+		helperModel.setAvailableTimes(hashSetOfAvailableTimes);
+
+		// aby po save zobrazilo uz iba mna
+		if (showAllStudentsAvailableTime.isSelected()) {
+			showAllStudentsAvailableTime.setSelected(false);
+		}
+
 	}
 
 	// skopirovana z

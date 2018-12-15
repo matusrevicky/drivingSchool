@@ -30,10 +30,11 @@ CREATE TABLE `availabletime` (
   `endTime` datetime DEFAULT NULL,
   `myUserId` int(11) NOT NULL,
   `eventString` varchar(500) DEFAULT NULL,
+  `eventStringUID` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_AvailableTime_User_idx` (`myUserId`),
   CONSTRAINT `fk_AvailableTime_User` FOREIGN KEY (`myUserId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +43,6 @@ CREATE TABLE `availabletime` (
 
 LOCK TABLES `availabletime` WRITE;
 /*!40000 ALTER TABLE `availabletime` DISABLE KEYS */;
-INSERT INTO `availabletime` VALUES (1,'2018-12-11 01:00:00','2018-12-11 05:55:00',3,'BEGIN:VEVENT\r\nORGANIZER:mailto:default_organizer@example.org\r\nSUMMARY:New\r\nCATEGORIES:group00\r\nDTSTART;TZID=Europe/Prague:20181211T010000\r\nDTEND;TZID=Europe/Prague:20181211T055500\r\nCREATED:20181211T193720Z\r\nDTSTAMP:20181211T193720Z\r\nUID:20181211T203720-7jfxtras.org\r\nEND:VEVENT');
 /*!40000 ALTER TABLE `availabletime` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -72,7 +72,6 @@ CREATE TABLE `reservation` (
 
 LOCK TABLES `reservation` WRITE;
 /*!40000 ALTER TABLE `reservation` DISABLE KEYS */;
-INSERT INTO `reservation` VALUES ('BEGIN:VEVENT\r\nORGANIZER:mailto:default_organizer@example.org\r\nSUMMARY:New\r\nCATEGORIES:group00\r\nDTSTART;TZID=Europe/Prague:20181213T021000\r\nDTEND;TZID=Europe/Prague:20181213T070500\r\nCREATED:20181211T193720Z\r\nDTSTAMP:20181211T202831Z\r\nUID:20181211T203720-7jfxtras.org\r\nSEQUENCE:2\r\nEND:VEVENT',0,3,2);
 /*!40000 ALTER TABLE `reservation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -98,7 +97,7 @@ CREATE TABLE `user` (
   `ridesDone` int(11) DEFAULT NULL,
   `role` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,7 +106,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'u','p','p','p2s@s.sk','$2a$10$Yd/ysay5w2VrPAqcBjiFeuTWnv8F5su9t.YouyZ3I7CsjdkVNsRQC','p','2018-12-08 20:49:58','2018-12-10 21:31:12','2018-12-10 10:23:09',1,0,'admin'),(2,'Matus','Revicky','s','s@sk.sk','$2a$10$f0szuWmoHbFp5Fp1gEvlf.WzNLYqcnp5XJcbj/oIuaEJF6JqQGtNi','s','2018-12-08 20:58:24','2018-12-11 14:00:20','2018-12-10 10:10:34',1,0,'student'),(3,'Instruktor','to','t','t@sd.sjk','$2a$10$IELGS7m183jirbdmydqyb.R9SkGhVffnIshFpTPpD7spCSFPc5WKW','tt','2018-12-08 20:59:05','2018-12-11 20:57:02','2018-12-11 20:56:53',1,0,'teacher'),(6,'b','b','b','b@b.sk','$2a$10$1KVm0DDy1KJtI5Twqe2gtOp7i.zZ4sm2UbqlQZH4w301xaB38w.ve','b','2018-12-09 17:56:35','2018-12-10 10:15:54','2018-12-10 10:18:30',1,0,'admin'),(7,'g','g','g','g@g.sk','$2a$10$8Ax73czjAJHH4v6Xx92soOZ2gBOizmv.V.26VRcbYdSE3S3cxqZQy','g','2018-12-09 21:04:01','2018-12-09 21:07:53','2018-12-09 21:04:01',1,0,'teacher'),(8,'po','po','po','po@ak.sk','$2a$10$MfWwoM7S4RSt.H57PiukYeM.b3r7Ddyz2R6/kme38ymRUWb6rITO2','po','2018-12-10 08:55:12','2018-12-10 08:55:12','2018-12-10 08:55:12',1,0,'student'),(9,'Samo','Osw','a','aa@sd.sl','$2a$10$I6DOo7Y8NCoHMr41csSP.e3e6sEB89bvBp0m6hVi49hER0Y7XaBH6','','2018-12-10 09:02:29','2018-12-11 14:03:57','2018-12-10 09:02:29',1,0,'student'),(10,'l','l','l','l@lk.sk','$2a$10$dyhJHg6zR2SyuHC0y8u1CeB9qRjchMJ5YFV7q.tQl5V9/EtPwwoSW','l','2018-12-10 10:19:40','2018-12-10 10:24:24','2018-12-10 10:19:48',1,0,'student'),(11,'x','x','x','x@sk.sk','$2a$10$xqxsbg2Yhb5ffWl7wwdazeql/UJ1t6IOWMYDNezYO203uXKZG8kNO','x','2018-12-11 20:58:24','2018-12-11 21:48:51','2018-12-11 20:58:24',0,0,'student'),(12,'m','m','m','m@sk.sk','$2a$10$3OC77EAnC/B7jAEDOuOyNed7cLicXNdTla25Uf6t12btK.ZJ.20R.','m','2018-12-11 21:53:44','2018-12-11 21:53:44','2018-12-11 21:53:44',1,0,'student'),(13,'/','/','/','sasd.sl@sd.sk','$2a$10$H2mn0ycPtxxBs/CW/42xDe3HUuAAcLYsLxcuz8FQDICOhuNY1Ht52','/','2018-12-11 22:05:47','2018-12-11 22:05:47','2018-12-11 22:05:47',1,0,'student'),(14,'gy','gy','gy','gy@sf.kl','$2a$10$IQ4rmDzTkyBwxxdn791KWOoh5uAgcBslm5iJ2sGITNSsAeVnB2h32','gy','2018-12-11 22:07:27','2018-12-11 22:07:27','2018-12-11 22:07:27',1,0,'student');
+INSERT INTO `user` VALUES (1,'admin','admin','admin','admin@s.sk','$2a$10$fvjHz7uq5hKcerWMapwWG./Ik1NrCa7uzPloJ0T6JpvrnqawGoUFC','0090008','2018-12-08 20:49:58','2018-12-14 22:32:53','2018-12-14 22:32:48',1,0,'admin'),(21,'Stud','1','s1','s1@s.sk','$2a$10$7eP87Ln9K3WyMR1hHHo8UesbZE3qaQZtla..EYG30XNmdMgSoAivC','0987657835','2018-12-15 14:45:07','2018-12-15 14:45:07','2018-12-15 14:45:07',1,0,'student'),(22,'Stud','2','s2','s2@s.sk','$2a$10$83wpU5/i2FH8mVBW312Nj.BYMldtQQF4cZv7m9ejTXe4Jdwm5w0US','09877654532','2018-12-15 14:46:28','2018-12-15 14:46:38','2018-12-15 14:46:28',1,0,'student'),(23,'Stud','3','s3','s3@s.sk','$2a$10$SXWJhzIzsCDgQNlyD/sU4O.QJp5xXcYHaVRKtX8HJN.RRr.NtHpWy','09765345276','2018-12-15 14:47:34','2018-12-15 14:47:34','2018-12-15 14:47:34',1,0,'student'),(24,'Inst','1','i1','i1@s.sk','$2a$10$qluWcdoMXaGS3PBQXZsa.esxq21byuBUOH5xNjuzGaZFzxYANE.SC','0976538762','2018-12-15 14:48:27','2018-12-15 14:48:27','2018-12-15 14:48:27',1,0,'student'),(25,'Inst','2','i2','i2@s.sk','$2a$10$18yGVJJv5Ita0t7xN8SPIu19Lxqo3CnQ62lTKYkQXlItJXZ3cpJg6','0967754356','2018-12-15 14:49:03','2018-12-15 14:49:19','2018-12-15 14:49:03',1,0,'student');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -120,4 +119,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-12-11 22:19:18
+-- Dump completed on 2018-12-15 14:54:19

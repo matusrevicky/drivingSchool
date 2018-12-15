@@ -1,4 +1,4 @@
-package sk.upjs.drivingSchool;
+package sk.upjs.drivingSchool.persistent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +11,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
+import sk.upjs.drivingSchool.entity.Role;
+import sk.upjs.drivingSchool.entity.User;
 import sk.upjs.drivingSchool.login.Authenticator;
 
 public class MysqlUserDao implements UserDao {
@@ -19,6 +21,13 @@ public class MysqlUserDao implements UserDao {
 
 	public MysqlUserDao(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
+	}
+
+	public void deleteAll() {
+		jdbcTemplate.update("SET SQL_SAFE_UPDATES = 0;");;
+		jdbcTemplate.update("DELETE FROM reservation");
+		jdbcTemplate.update("DELETE FROM availabletime");
+		jdbcTemplate.update("DELETE FROM user");
 	}
 
 	@Override
@@ -74,16 +83,16 @@ public class MysqlUserDao implements UserDao {
 				String sql = "UPDATE User SET fname = ?, lname = ?, username = ?, email = ?,"
 						+ " phoneNumber = ?, dateCreated = ?, lastModified = ?,"
 						+ " lastLogin = ?, active = ?, ridesDone = ?, role = ?" + "WHERE id = ?";
-				jdbcTemplate.update(sql, u.getFname(), u.getLname(), u.getUsername(), u.getEmail(),
-						u.getPhoneNumber(), u.getDateCreated(), u.getLastModified(), u.getLastLogin(), u.isActive(),
-						u.getRidesDone(), u.getRole(), u.getId());
+				jdbcTemplate.update(sql, u.getFname(), u.getLname(), u.getUsername(), u.getEmail(), u.getPhoneNumber(),
+						u.getDateCreated(), u.getLastModified(), u.getLastLogin(), u.isActive(), u.getRidesDone(),
+						u.getRole(), u.getId());
 			} else {
 				String sql = "UPDATE User SET fname = ?, lname = ?, username = ?, email = ?,"
 						+ " password = ?, phoneNumber = ?, dateCreated = ?, lastModified = ?,"
 						+ " lastLogin = ?, active = ?, ridesDone = ?, role = ?" + "WHERE id = ?";
-				jdbcTemplate.update(sql, u.getFname(), u.getLname(), u.getUsername(), u.getEmail(), Authenticator.INSTANCE.hashPassword(u.getPassword()),
-						u.getPhoneNumber(), u.getDateCreated(), u.getLastModified(), u.getLastLogin(), u.isActive(),
-						u.getRidesDone(), u.getRole(), u.getId());
+				jdbcTemplate.update(sql, u.getFname(), u.getLname(), u.getUsername(), u.getEmail(),
+						Authenticator.INSTANCE.hashPassword(u.getPassword()), u.getPhoneNumber(), u.getDateCreated(),
+						u.getLastModified(), u.getLastLogin(), u.isActive(), u.getRidesDone(), u.getRole(), u.getId());
 			}
 		}
 	}
@@ -115,7 +124,7 @@ public class MysqlUserDao implements UserDao {
 	 */
 
 	@Override
-	public User get(String username) throws EmptyResultDataAccessException {
+	public User get(String username) {
 		// FIXME prerobit
 		User thisUser = null;
 		for (User u : getAll()) {
@@ -129,7 +138,7 @@ public class MysqlUserDao implements UserDao {
 	}
 
 	@Override
-	public User get(long id) throws EmptyResultDataAccessException {
+	public User get(long id)  {
 		// FIXME prerobit
 		User thisUser = new User();
 		for (User u : getAll()) {
@@ -140,10 +149,10 @@ public class MysqlUserDao implements UserDao {
 		}
 		return thisUser;
 	}
-	
+
 	public List<User> search(String name) {
 		String sql = "SELECT id, fname, lname, username, email, password, phoneNumber, dateCreated, "
-				+ "lastModified, lastLogin, active, ridesDone, role FROM User where fname LIKE '%"+name+"%'";
+				+ "lastModified, lastLogin, active, ridesDone, role FROM User where fname LIKE '%" + name + "%'";
 		List<User> users = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
 		AvailableTimesDao availableTimeDao = DaoFactory.INSTANCE.getAvailableTimesDao();
 		ReservationDao reservationDao = DaoFactory.INSTANCE.getReservationDao();

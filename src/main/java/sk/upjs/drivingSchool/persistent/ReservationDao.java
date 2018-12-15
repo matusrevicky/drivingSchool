@@ -1,6 +1,8 @@
-package sk.upjs.drivingSchool;
+package sk.upjs.drivingSchool.persistent;
 
 import java.util.HashSet;
+
+import sk.upjs.drivingSchool.entity.Reservation;
 
 public interface ReservationDao {
 	

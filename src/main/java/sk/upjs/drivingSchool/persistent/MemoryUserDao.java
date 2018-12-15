@@ -1,4 +1,4 @@
-package sk.upjs.drivingSchool;
+package sk.upjs.drivingSchool.persistent;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -10,6 +10,9 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
+import sk.upjs.drivingSchool.entity.AvailableTime;
+import sk.upjs.drivingSchool.entity.Role;
+import sk.upjs.drivingSchool.entity.User;
 import sk.upjs.drivingSchool.login.Authenticator;
 
 public class MemoryUserDao implements UserDao {
@@ -193,5 +196,11 @@ public class MemoryUserDao implements UserDao {
 	public List<User> search(String name) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void deleteAll() {
+		// TODO Auto-generated method stub
+		
 	}
 }

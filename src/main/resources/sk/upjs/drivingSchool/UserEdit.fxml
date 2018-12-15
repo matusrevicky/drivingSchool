@@ -13,7 +13,6 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-
 <BorderPane prefHeight="466.0" prefWidth="743.0" style="-fx-background-color: #3196DE;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="436.0" prefWidth="694.0" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);">
@@ -64,7 +63,6 @@
             <Label layoutX="99.0" layoutY="179.0" text="Last change:" />
             <Label layoutX="88.0" layoutY="256.0" text="Last login:" />
             <TextField fx:id="lastLoginTextField" editable="false" layoutX="69.0" layoutY="281.0" />
-            <Button fx:id="deleteUserButton" layoutX="523.0" layoutY="443.0" mnemonicParsing="false" text="Delete" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="72.0" />
             <Button fx:id="cancelButton" cancelButton="true" layoutX="444.0" layoutY="397.0" mnemonicParsing="false" text="Close" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="197.0" />
             <TextField fx:id="passwordTextField" layoutX="136.0" layoutY="351.0" />
             <Label layoutX="43.0" layoutY="355.0" text="New password:" />

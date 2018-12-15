@@ -9,56 +9,48 @@ import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 
-import com.sun.corba.se.impl.protocol.ServantCacheLocalCRDBase;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.collections.ListChangeListener.Change;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
+
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView.EditEvent;
+
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
+
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.MouseDragEvent;
-import javafx.scene.input.MouseEvent;
+
 import javafx.scene.layout.BorderPane;
 import jfxtras.icalendarfx.VCalendar;
-import jfxtras.icalendarfx.components.VDateTimeEnd;
+
 import jfxtras.icalendarfx.components.VEvent;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.icalendar.ICalendarAgenda;
 import sk.upjs.drivingSchool.App;
-import sk.upjs.drivingSchool.AvailableTime;
-import sk.upjs.drivingSchool.AvailableTimesDao;
-import sk.upjs.drivingSchool.DaoFactory;
-import sk.upjs.drivingSchool.Reservation;
-import sk.upjs.drivingSchool.ReservationDao;
-import sk.upjs.drivingSchool.Role;
-import sk.upjs.drivingSchool.User;
-import sk.upjs.drivingSchool.UserDao;
 import sk.upjs.drivingSchool.UserFxModel;
+
+import sk.upjs.drivingSchool.entity.Reservation;
+import sk.upjs.drivingSchool.entity.Role;
+import sk.upjs.drivingSchool.entity.User;
 import sk.upjs.drivingSchool.login.UserSessionManager;
+import sk.upjs.drivingSchool.persistent.AvailableTimesDao;
+import sk.upjs.drivingSchool.persistent.DaoFactory;
+import sk.upjs.drivingSchool.persistent.ReservationDao;
+import sk.upjs.drivingSchool.persistent.UserDao;
 
 @SuppressWarnings("restriction")
 public class ReservationController {
@@ -126,15 +118,14 @@ public class ReservationController {
 	@FXML
 	private ImageView userImageView;
 
-	@FXML
-	private CheckBox showAllStudentsAvailableTime;
+	
 
 	@FXML
 	private Agenda calendarOriginal;
 	private BorderPane borderPane = null;
 	private ICalendarAgenda calendarAgenda;
 	private VCalendar myCalendar;
-	private ArrayList<VEvent> eventsBeforeChange = new ArrayList<VEvent>();
+	private ArrayList<VEvent> eventsBeforeChange = new ArrayList<VEvent>(); 
 
 	private ReservationDao reservationDao = DaoFactory.INSTANCE.getReservationDao();
 	private AvailableTimesDao availableTimesDao = DaoFactory.INSTANCE.getAvailableTimesDao();
@@ -144,7 +135,7 @@ public class ReservationController {
 	private UserFxModel studentModel;
 	private UserFxModel studentForALessonModel;
 
-	private boolean showAllStudentsAvailableTimeChecked = false;
+	
 	private boolean showAllStudentsChecked = false;
 	private boolean showAllInstructorsChecked = false;
 
@@ -184,7 +175,8 @@ public class ReservationController {
 		if (loggedInUser.getRole().equals(Role.STUDENT.getName())) {
 			setMyReservationsAsSeen();
 		}
-		//countRidesDoneForAll();// alebo ridesDone pridavat rucne, nie oba sposoby naraz
+		// countRidesDoneForAll();// alebo ridesDone pridavat rucne, nie oba sposoby
+		// naraz
 		checkSaveComponentsVisibility();
 		initializeLeftMenuComponents();
 
@@ -249,21 +241,14 @@ public class ReservationController {
 		initializeCalendar();
 	}
 
-	/*void countRidesDoneForAll() {
-		for (User s : userDao.getAll(Role.STUDENT.getName(), true)) {
-			int rides = 0;
-			for (Reservation r : s.getReservations()) {
-				VEvent e = VEvent.parse(r.getEventString());
-				//if (e.getDateTimeStart() < now) {
-				//	rides++;
-				//}
-			}
-			if (s.getRidesDone() != rides) {
-				s.setRidesDone(rides);
-				userDao.save(loggedInUser);
-			}
-		}
-	}*/
+	/*
+	 * void countRidesDoneForAll() { for (User s :
+	 * userDao.getAll(Role.STUDENT.getName(), true)) { int rides = 0; for
+	 * (Reservation r : s.getReservations()) { VEvent e =
+	 * VEvent.parse(r.getEventString()); //if (e.getDateTimeStart() < now) { //
+	 * rides++; //} } if (s.getRidesDone() != rides) { s.setRidesDone(rides);
+	 * userDao.save(loggedInUser); } } }
+	 */
 
 	private void enableOrDisableSaveButton() {
 		if (instructorComboBox.getSelectionModel().isEmpty() || studentForEventComboBox.getSelectionModel().isEmpty()) {
@@ -322,78 +307,7 @@ public class ReservationController {
 
 	private void initializeComponents() {
 
-		showAllStudentsAvailableTime.selectedProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				showAllStudentsAvailableTimeChecked = newValue;
-
-				if (showAllStudentsAvailableTimeChecked) {
-					if (borderPane == null)
-						borderPane = (BorderPane) calendarOriginal.getParent();
-					if (borderPane.getChildren() == null || borderPane.getChildren().size() == 0) {
-
-					} else if (borderPane.getChildren().size() == 1) {
-						borderPane.getChildren().remove(0);
-					} else {
-						System.out.println("Viac kalendarov naraz exception!");
-					}
-
-					StringBuilder sb = new StringBuilder();
-					DateTimeFormatter formatter;
-					sb.append("BEGIN:VCALENDAR\r\n");
-					HashSet<AvailableTime> reservationSet = new HashSet<AvailableTime>();
-
-					reservationSet = availableTimesDao.getAllCalendarEvents();
-					for (AvailableTime reservation : reservationSet) {
-						sb.append(reservation.getEventString());
-						sb.append("\r\n");
-					}
-
-					if (instructorModel != null) {
-						instructorModel.setAvailableTimes(reservationSet);
-					}
-
-					sb.append("END:VCALENDAR");
-					String s = sb.toString();
-					s.replaceAll("//", "/");
-
-					// String s = reservationsToString();
-					// System.out.println("---------------");
-					// System.out.println(s);
-					// System.out.println("---------------");
-					myCalendar = VCalendar.parse(s);
-
-					calendarAgenda = new ICalendarAgenda(myCalendar);
-					borderPane.setCenter(calendarAgenda);
-					eventsBeforeChange.removeAll(eventsBeforeChange);
-					if (myCalendar.getVEvents() != null) {
-						eventsBeforeChange.addAll(myCalendar.getVEvents());
-					}
-				} else {
-					StringBuilder sb = new StringBuilder();
-					DateTimeFormatter formatter;
-					sb.append("BEGIN:VCALENDAR\r\n");
-
-					sb.append("END:VCALENDAR");
-					String s = sb.toString();
-					s.replaceAll("//", "/");
-
-					// String s = reservationsToString();
-					// System.out.println("---------------");
-					// System.out.println(s);
-					// System.out.println("---------------");
-					myCalendar = VCalendar.parse(s);
-
-					calendarAgenda = new ICalendarAgenda(myCalendar);
-					borderPane.setCenter(calendarAgenda);
-					eventsBeforeChange.removeAll(eventsBeforeChange);
-					if (myCalendar.getVEvents() != null) {
-						eventsBeforeChange.addAll(myCalendar.getVEvents());
-					}
-				}
-
-			}
-		});
+		
 		showAllInstructors.selectedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -773,7 +687,7 @@ public class ReservationController {
 	}
 
 	private void saveReservations() {
-		if(loggedInUser.getRole().equals(Role.STUDENT.getName())) {
+		if (loggedInUser.getRole().equals(Role.STUDENT.getName())) {
 			System.out.println("Student sa pokusil ulozit rezervacie");
 			return;
 		}

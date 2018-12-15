@@ -2,7 +2,7 @@ package sk.upjs.drivingSchool.login;
 
 import java.time.LocalDateTime;
 
-import sk.upjs.drivingSchool.User;
+import sk.upjs.drivingSchool.entity.User;
 
 public class UserSession {
 
