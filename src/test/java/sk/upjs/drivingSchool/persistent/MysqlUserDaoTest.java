@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,8 +16,18 @@ import sk.upjs.drivingSchool.login.Authenticator;
 class MysqlUserDaoTest {
 
 	// predtym ako zacnem s testami treba prepnut dao.factory na testovaciu databazu
-	private static UserDao dao = DaoFactory.INSTANCE.getUserDao();
+	private  UserDao dao = DaoFactory.INSTANCE.getUserDao();
 
+	@BeforeAll
+	static void setUpBeforeClass() throws Exception {
+		DaoFactory.INSTANCE.setTesting(true);
+	}
+
+	@AfterAll
+	static void tearDownAfterClass() throws Exception {
+		DaoFactory.INSTANCE.setTesting(false);
+	}
+	
 	@BeforeEach
 	void emptyDatabase() {
 		dao.deleteAll();

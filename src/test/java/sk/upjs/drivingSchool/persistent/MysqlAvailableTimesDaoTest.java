@@ -17,9 +17,20 @@ import sk.upjs.drivingSchool.login.Authenticator;
 
 class MysqlAvailableTimesDaoTest {
 	// predtym ako zacnem s testami treba prepnut dao.factory na testovaciu databazu
-	private static UserDao dao = DaoFactory.INSTANCE.getUserDao();
-	private static AvailableTimesDao rDao = DaoFactory.INSTANCE.getAvailableTimesDao();
+	private  UserDao dao = DaoFactory.INSTANCE.getUserDao();
+	private  AvailableTimesDao rDao = DaoFactory.INSTANCE.getAvailableTimesDao();
 
+	
+	@BeforeAll
+	static void setUpBeforeClass() throws Exception {
+		DaoFactory.INSTANCE.setTesting(true);
+	}
+
+	@AfterAll
+	static void tearDownAfterClass() throws Exception {
+		DaoFactory.INSTANCE.setTesting(false);
+	}
+	
 	@BeforeEach
 	void emptyDatabase() {
 		dao.deleteAll();

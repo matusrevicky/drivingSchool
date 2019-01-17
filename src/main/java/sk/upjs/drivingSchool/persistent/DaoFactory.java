@@ -11,6 +11,14 @@ public enum DaoFactory {
 	private UserDao userDao;
 	private AvailableTimesDao availableTimesDao;
 	private ReservationDao reservationDao;
+	private boolean isTesting = false;
+	
+	public boolean isTesting() {
+		return isTesting;
+	}
+	public void setTesting(boolean isTesting) {
+		this.isTesting = isTesting;
+	}
 	
 	
 	public UserDao getUserDao() {
@@ -41,8 +49,13 @@ public enum DaoFactory {
 			MysqlDataSource dataSource = new MysqlDataSource();
 			dataSource.setUser("root");
 			dataSource.setPassword("databazy");
-			dataSource.setDatabaseName("mydb"); //mydbtest ak testujem
-			dataSource.setUrl("jdbc:mysql://localhost/mydb?serverTimezone=Europe/Bratislava");//driving_school
+			if (isTesting == true) {
+				dataSource.setDatabaseName("mydbtest"); //mydbtest ak testujem
+				dataSource.setUrl("jdbc:mysql://localhost/mydbtest?serverTimezone=Europe/Bratislava");//driving_school
+			} else {
+				dataSource.setDatabaseName("mydb"); //mydbtest ak testujem
+				dataSource.setUrl("jdbc:mysql://localhost/mydb?serverTimezone=Europe/Bratislava");//driving_school
+			}
 			jdbcTemplate = new JdbcTemplate(dataSource);
 		}
 		return jdbcTemplate;
