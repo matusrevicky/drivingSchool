@@ -28,6 +28,9 @@ public class MysqlUserDao implements UserDao {
 		jdbcTemplate.update("DELETE FROM reservation");
 		jdbcTemplate.update("DELETE FROM availabletime");
 		jdbcTemplate.update("DELETE FROM user");
+	    jdbcTemplate.update("ALTER TABLE user AUTO_INCREMENT = 1");
+	    jdbcTemplate.update("ALTER TABLE reservation AUTO_INCREMENT = 1");
+	    jdbcTemplate.update("ALTER TABLE availabletime AUTO_INCREMENT = 1");
 	}
 
 	@Override
@@ -138,7 +141,7 @@ public class MysqlUserDao implements UserDao {
 	}
 
 	@Override
-	public User get(long id)  {
+	public User get(long id) {
 		// FIXME prerobit
 		User thisUser = new User();
 		for (User u : getAll()) {
